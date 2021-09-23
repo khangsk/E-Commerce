@@ -1,14 +1,19 @@
 import Header from "./Layout/Header";
 import styled from "styled-components";
-
-const Layout = styled.div`
-  width: 1200px;
-  max-width: 100%;
-  margin: 0 auto;
-`;
+import SwipeableTextMobileStepper from "./Carousel";
+import MainContent from "./MainContent";
+import RepositoriesList from "./RepositoriesList";
 
 const HomePage: React.FC = () => {
-  return <>{/* <Header /> */}</>;
+  return (
+    <>
+      <SwipeableTextMobileStepper />
+      <MainContent />
+
+      {/* test API */}
+      <RepositoriesList />
+    </>
+  );
 };
 
 export default HomePage;
