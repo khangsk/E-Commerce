@@ -6,9 +6,7 @@ import { useTypedSelector } from "../../hooks/useTypedSelector";
 import "./index.css";
 
 const MainContent: React.FC = () => {
-  const { data, error, loading } = useTypedSelector(
-    (state) => state.repositories
-  );
+  const { data } = useTypedSelector((state) => state.repositories);
 
   return (
     <div className="app__container">

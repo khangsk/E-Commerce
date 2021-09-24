@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useTypedSelector } from "../../hooks/useTypedSelector";
 
 import CartIcon from "../Cart/CartIcon";
 // import CartContext from "../../store/cart-context";
@@ -13,6 +14,7 @@ import {
 
 const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
+  const { isLoggedIn } = useTypedSelector((state) => state.repositories);
   // const cartCtx = useContext(CartContext);
 
   // const { items } = cartCtx;
@@ -61,17 +63,17 @@ const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
           </li>
         </ul>
       </div>
-      <NavLink
-        activeClassName="active"
-        className="link separate"
-        to="/register"
-      >
-        Đăng ký
-      </NavLink>
+      {!isLoggedIn && (
+        <Link className="link separate" to="/register">
+          Đăng ký
+        </Link>
+      )}
+      {!isLoggedIn && (
+        <Link className="link separate" to="/login">
+          Đăng nhập
+        </Link>
+      )}
 
-      <Link className="link separate" to="/login">
-        Đăng nhập
-      </Link>
       <Link className="link" to="/checkout">
         Liên hệ
       </Link>

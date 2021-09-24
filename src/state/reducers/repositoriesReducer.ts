@@ -17,6 +17,7 @@ interface RepositoriesState {
   loading: boolean;
   error: string | null;
   data: ProductType[];
+  token: string;
 }
 
 const initialState = {
@@ -37,6 +38,7 @@ const initialState = {
       isDeleted: false,
     },
   ],
+  token: "",
 };
 
 const reducer = (
@@ -45,9 +47,9 @@ const reducer = (
 ): RepositoriesState => {
   switch (action.type) {
     case ActionType.LOGIN:
-      return { ...state, isLoggedIn: true };
+      return { ...state, isLoggedIn: true, token: action.payload };
     case ActionType.LOGOUT:
-      return { ...state, isLoggedIn: false };
+      return { ...state, isLoggedIn: false, token: "" };
     case ActionType.LOAD_PRODUCT:
       return { ...state, loading: true, error: null, data: [] };
     case ActionType.LOAD_PRODUCT_SUCCESS:

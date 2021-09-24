@@ -1,19 +1,30 @@
 import firebase from "firebase/app";
 import "firebase/storage";
+import "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD0pB3sBcGwPH6XrCuhx_9Vp3gExw1wYNY",
-  authDomain: "e-commerce-59b80.firebaseapp.com",
-  databaseURL: "https://e-commerce-59b80.firebaseio.com",
-  projectId: "e-commerce-59b80",
-  storageBucket: "e-commerce-59b80.appspot.com",
-  messagingSenderId: "857779471728",
-  appId: "1:857779471728:web:d5e42cdf06ded57a3bfbb5",
-  measurementId: "G-HWQR6RYPG2",
+  apiKey: "AIzaSyDb7qRj2WgeaJsJIn7JyAzyDbPI3hzyKoY",
+  authDomain: "efootball-e37a5.firebaseapp.com",
+  databaseURL: "https://efootball-e37a5-default-rtdb.firebaseio.com",
+  projectId: "efootball-e37a5",
+  storageBucket: "efootball-e37a5.appspot.com",
+  messagingSenderId: "642625662545",
+  appId: "1:642625662545:web:6e6f7cccfc905cdf84d270",
+  measurementId: "G-VN32M8V4G4",
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app();
+}
 
 const storage = firebase.storage();
 
-export { storage, firebase as default };
+const db = firebase.firestore();
+
+const User = db.collection("User");
+const MenuItems = db.collection("MenuItems");
+const Categories = db.collection("Categories");
+
+export { storage, firebase as default, User, MenuItems, Categories };

@@ -4,6 +4,7 @@ import { ActionType } from "../action-types";
 export type Action =
   | {
       type: ActionType.LOGIN;
+      payload: string;
     }
   | {
       type: ActionType.LOGOUT;
