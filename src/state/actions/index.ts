@@ -1,3 +1,4 @@
+import { ProductType } from "../reducers/repositoriesReducer";
 import { ActionType } from "../action-types";
 
 export type Action =
@@ -12,7 +13,7 @@ export type Action =
     }
   | {
       type: ActionType.LOAD_PRODUCT_SUCCESS;
-      payload: string[];
+      payload: ProductType[];
     }
   | {
       type: ActionType.LOAD_PRODUCT_ERROR;

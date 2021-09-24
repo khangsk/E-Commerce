@@ -1,24 +1,37 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faHeart, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import { ProductType } from "../../state/reducers/repositoriesReducer";
+import { FormatAmount } from "../../helper";
 
-const HomeProduct: React.FC = () => {
+const HomeProduct: React.FC<{ data: ProductType }> = (props) => {
+  const {
+    ProductID,
+    CategoryID,
+    Name,
+    Price,
+    Discount,
+    Description,
+    image,
+    isDeleted,
+  } = props.data;
   return (
     <div className="grid__column-2-4">
-      <Link to="/product-detail/123" className="home-product-item">
+      <Link to={`/product-detail/${ProductID}`} className="home-product-item">
         <div
           className="home-product-item__img"
           style={{
-            backgroundImage:
-              "url(https://cf.shopee.vn/file/42c51761d53b623a5bc6fcf8772d9e94)",
+            backgroundImage: `url(${image})`,
           }}
         ></div>
-        <h4 className="home-product-item__name">
-          Apple MacBook Pro (2020) M1 Chip, 13 inch, 8GB, 256GB SSD
-        </h4>
+        <h4 className="home-product-item__name">{Name}</h4>
         <div className="home-product-item__price">
-          <span className="home-product-item__price-old">36.990.000đ</span>
-          <span className="home-product-item__price-current">31.490.000đ</span>
+          <span className="home-product-item__price-old">
+            {FormatAmount(Price)}
+          </span>
+          <span className="home-product-item__price-current">
+            {FormatAmount(Price * (1 - Discount))}
+          </span>
         </div>
         <div className="home-product-item__action">
           <span
@@ -27,27 +40,29 @@ const HomeProduct: React.FC = () => {
                             home-product-item__like--liked
                           "
           >
-            <i
-              className="
-                              home-product-item__like-icon-empty
-                              fal
-                              fa-heart
-                            "
-            ></i>
-            <i
-              className="
-                              home-product-item__like-icon-fill
-                              fas
-                              fa-heart
-                            "
-            ></i>
+            <FontAwesomeIcon
+              icon={faHeart}
+              className="home-product-item__like-icon-fill"
+            />
           </span>
           <div className="home-product-item__rating">
-            <i className="home-product-item__star--gold fas fa-star"></i>
-            <i className="home-product-item__star--gold fas fa-star"></i>
-            <i className="home-product-item__star--gold fas fa-star"></i>
-            <i className="home-product-item__star--gold fas fa-star"></i>
-            <i className="fas fa-star"></i>
+            <FontAwesomeIcon
+              icon={faStar}
+              className="home-product-item__star--gold"
+            />
+            <FontAwesomeIcon
+              icon={faStar}
+              className="home-product-item__star--gold"
+            />
+            <FontAwesomeIcon
+              icon={faStar}
+              className="home-product-item__star--gold"
+            />
+            <FontAwesomeIcon
+              icon={faStar}
+              className="home-product-item__star--gold"
+            />
+            <FontAwesomeIcon icon={faStar} style={{ color: "#ccc" }} />
           </div>
           <span className="home-product-item__sold">88 đã bán</span>
         </div>
@@ -66,7 +81,9 @@ const HomeProduct: React.FC = () => {
         </div>
 
         <div className="home-product-item__sale-off">
-          <span className="home-product-item__sale-off-percent">15%</span>
+          <span className="home-product-item__sale-off-percent">
+            {Discount * 100}%
+          </span>
           <span className="home-product-item__sale-off-label">GIẢM</span>
         </div>
       </Link>

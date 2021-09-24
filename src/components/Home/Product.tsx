@@ -1,7 +1,8 @@
 import HomeProduct from "../MainContent/HomeProduct";
 import { Link } from "react-router-dom";
+import { ProductType } from "../../state/reducers/repositoriesReducer";
 
-const Product: React.FC<{ name: string; items: number[] }> = ({
+const Product: React.FC<{ name: string; items: ProductType[] }> = ({
   name,
   items,
 }) => {
@@ -18,7 +19,7 @@ const Product: React.FC<{ name: string; items: number[] }> = ({
       <div className="home-product">
         <div className="grid__row">
           {items.map((item) => (
-            <HomeProduct />
+            <HomeProduct data={item} />
           ))}
         </div>
       </div>

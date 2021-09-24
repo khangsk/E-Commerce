@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGift, faCheck } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
 import styled from "styled-components";
+import { useTypedSelector } from "../../hooks/useTypedSelector";
+import { useParams } from "react-router-dom";
 
 const Container = styled.div`
   width: 1200px;
@@ -117,6 +119,7 @@ const Description = styled.div`
     padding: 5px 0 5px 25px;
     display: flex;
     justify-content: space-around;
+    margin-top: 32px;
   }
 
   .input-quantity {
@@ -151,73 +154,92 @@ const LIST_PROMOTION_MORE = [
 ];
 
 const ProductDetail: React.FC = () => {
-  return (
-    <Container>
-      <div style={{ width: "50%", border: "1px solid #ccc" }}>
-        <img
-          src="https://cf.shopee.vn/file/42c51761d53b623a5bc6fcf8772d9e94"
-          alt="Images"
-          style={{ width: "90%" }}
-        />
-      </div>
-      <Description>
-        <p className="product-name">Giày Mizuno Basara Pro TF</p>
-        <span className="product-sale-number">Đã bán 1</span>
+  const { data, error, loading } = useTypedSelector(
+    (state) => state.repositories
+  );
 
-        <div className="product-item__price">
-          <span className="product-item__price-current">31.490.000đ</span>
-          <span className="product-item__price-old">36.990.000đ</span>
-          <span className="product-item__discount-rate">-5%</span>
+  const productId = useParams<{ id?: string }>()?.id;
+
+  let content = <></>;
+
+  if (productId) {
+    const product = data.find((el) => el.ProductID === +productId);
+
+    content = product ? (
+      <Container>
+        <div style={{ width: "50%", border: "1px solid #ccc" }}>
+          <img
+            src="https://cf.shopee.vn/file/42c51761d53b623a5bc6fcf8772d9e94"
+            alt="Images"
+            style={{ width: "90%" }}
+          />
         </div>
+        <Description>
+          <p className="product-name">Giày Mizuno Basara Pro TF</p>
+          <span className="product-sale-number">Đã bán 1</span>
 
-        <div className="product-voucher">
-          <strong className="product-voucher-title">KHUYẾN MÃI ĐẶC BIỆT</strong>
-          <span className="product-voucher-title-2">
-            <FontAwesomeIcon icon={faGift} style={{ marginRight: "8px" }} />
-            XẢ Hàng mùa dịch
-          </span>
-        </div>
+          <div className="product-item__price">
+            <span className="product-item__price-current">31.490.000đ</span>
+            <span className="product-item__price-old">36.990.000đ</span>
+            <span className="product-item__discount-rate">-5%</span>
+          </div>
 
-        <div className="promotion-more">
-          <strong>Ưu đãi thêm</strong>
-        </div>
-        <ul>
-          {LIST_PROMOTION_MORE.map((el) => (
-            <li>
-              <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} /> {el}
-            </li>
-          ))}
-        </ul>
+          <div className="product-voucher">
+            <strong className="product-voucher-title">
+              KHUYẾN MÃI ĐẶC BIỆT
+            </strong>
+            <span className="product-voucher-title-2">
+              <FontAwesomeIcon icon={faGift} style={{ marginRight: "8px" }} />
+              XẢ Hàng mùa dịch
+            </span>
+          </div>
 
-        <div className="purchase">
-          <Button
-            variant="contained"
-            style={{ backgroundColor: "#ff3945", minWidth: "50%" }}
-          >
-            Chọn mua
-          </Button>
-          <div className="quantity">
-            <span style={{ marginLeft: "36px" }}>Số lượng</span>
-            <div className="group-input">
-              <Button
-                variant="contained"
-                style={{ borderRadius: 0, minWidth: 0 }}
-              >
-                -
-              </Button>
-              <input type="number" className="input-quantity" />
-              <Button
-                variant="contained"
-                style={{ borderRadius: 0, minWidth: 0 }}
-              >
-                +
-              </Button>
+          <div className="promotion-more">
+            <strong>Ưu đãi thêm</strong>
+          </div>
+          <ul>
+            {LIST_PROMOTION_MORE.map((el) => (
+              <li>
+                <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} />{" "}
+                {el}
+              </li>
+            ))}
+          </ul>
+
+          <div className="purchase">
+            <Button
+              variant="contained"
+              style={{ backgroundColor: "#ff3945", minWidth: "50%" }}
+            >
+              Chọn mua
+            </Button>
+            <div className="quantity">
+              <span style={{ marginLeft: "36px" }}>Số lượng</span>
+              <div className="group-input">
+                <Button
+                  variant="contained"
+                  style={{ borderRadius: 0, minWidth: 0 }}
+                >
+                  -
+                </Button>
+                <input type="number" className="input-quantity" />
+                <Button
+                  variant="contained"
+                  style={{ borderRadius: 0, minWidth: 0 }}
+                >
+                  +
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </Description>
-    </Container>
-  );
+        </Description>
+      </Container>
+    ) : (
+      <></>
+    );
+  }
+
+  return content;
 };
 
 export default ProductDetail;

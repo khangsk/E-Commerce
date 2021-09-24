@@ -1,21 +1,25 @@
 import styled from "styled-components";
 import SwipeableTextMobileStepper from "./SwipeableTextMobileStepper";
 import MainContent from "../MainContent";
-import RepositoriesList from "../RepositoriesList";
+import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Product from "./Product";
 
-const DUMMY_DATA = [
-  {
-    productName: "Giày bóng đá",
-    items: [1, 2, 3, 4, 5],
-  },
-  {
-    productName: "Phụ kiện",
-    items: [1, 2, 3],
-  },
-];
-
 const HomePage: React.FC = () => {
+  const { data, error, loading } = useTypedSelector(
+    (state) => state.repositories
+  );
+
+  const DUMMY_DATA = [
+    {
+      productName: "Giày bóng đá",
+      items: data,
+    },
+    {
+      productName: "Phụ kiện",
+      items: data,
+    },
+  ];
+
   return (
     <>
       <SwipeableTextMobileStepper />

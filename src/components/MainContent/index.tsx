@@ -1,10 +1,15 @@
 import Category from "./Category";
 import HomeFilter from "./HomeFilter";
 import HomeProduct from "./HomeProduct";
+import { useTypedSelector } from "../../hooks/useTypedSelector";
 
 import "./index.css";
 
 const MainContent: React.FC = () => {
+  const { data, error, loading } = useTypedSelector(
+    (state) => state.repositories
+  );
+
   return (
     <div className="app__container">
       <div className="grid">
@@ -14,9 +19,9 @@ const MainContent: React.FC = () => {
             <HomeFilter />
             <div className="home-product">
               <div className="grid__row">
-                <HomeProduct />
-                <HomeProduct />
-                <HomeProduct />
+                {data.map((item) => (
+                  <HomeProduct data={item} />
+                ))}
               </div>
             </div>
           </div>

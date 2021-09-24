@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Header from "./components/Header";
 import MainContent from "./components/MainContent";
 import ProductDetail from "./components/ProductDetail";
+import UploadImage from "./UploadImage";
 
 const Layout = styled.div`
   width: 1200px;
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login" component={SignIn} />
         <Route path="/category/:categoryName" component={MainContent} />
         <Route path="/product-detail/:id" component={ProductDetail} />
+        <Route path="/checkout" component={UploadImage} />
       </Layout>
     </>
   );
