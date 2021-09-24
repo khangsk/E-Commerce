@@ -1,15 +1,17 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
+import SignIn from "./components/Utils/SignIn";
+import SignUp from "./components/Utils/SignUp";
 import styled from "styled-components";
-import HomePage from "./components/HomePage";
-import Header from "./components/Layout/Header";
+import Home from "./components/Home";
+import Header from "./components/Header";
+import MainContent from "./components/MainContent";
+import ProductDetail from "./components/ProductDetail";
 
 const Layout = styled.div`
   width: 1200px;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 66px auto;
 `;
 
 function App() {
@@ -17,12 +19,15 @@ function App() {
     <>
       <Layout>
         <Header />
-        <Route path="/" exact>
-          <Redirect to="/home" />
+        <Route path="/home" exact>
+          <Redirect to="/" />
         </Route>
-        <Route path="/home" component={HomePage} />
+
+        <Route path="/" exact component={Home} />
         <Route path="/register" component={SignUp} />
         <Route path="/login" component={SignIn} />
+        <Route path="/category/:categoryName" component={MainContent} />
+        <Route path="/product-detail/:id" component={ProductDetail} />
       </Layout>
     </>
   );

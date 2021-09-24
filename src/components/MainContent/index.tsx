@@ -12,7 +12,13 @@ const MainContent: React.FC = () => {
           <Category />
           <div className="grid__column-10">
             <HomeFilter />
-            <HomeProduct />
+            <div className="home-product">
+              <div className="grid__row">
+                <HomeProduct />
+                <HomeProduct />
+                <HomeProduct />
+              </div>
+            </div>
           </div>
         </div>
       </div>

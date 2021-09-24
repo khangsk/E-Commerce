@@ -16,7 +16,7 @@ const images = [
   {
     label: "San Francisco – Oakland Bay Bridge, United States",
     imgPath:
-      "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60",
+      "https://cdn.yousport.vn/Media/Slides/920nh%C3%A2nxxx450.png?v=2&auto=format&fit=crop&w=400&h=250&q=60",
   },
   {
     label: "Bird",
