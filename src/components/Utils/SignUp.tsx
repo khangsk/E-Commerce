@@ -14,24 +14,6 @@ import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 export default function SignUp() {
   const dispatch = useDispatch();
   const [isLoadding, setIsLoadding] = useState(false);
@@ -114,7 +96,8 @@ export default function SignUp() {
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 12,
+            marginBottom: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -271,7 +254,6 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </>
   );

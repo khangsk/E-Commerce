@@ -5,6 +5,7 @@ import SignUp from "./components/Utils/SignUp";
 import styled from "styled-components";
 import Home from "./components/Home";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
 import ProductDetail from "./components/ProductDetail";
 import UploadImage from "./UploadImage";
@@ -30,7 +31,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
     const getUserWhenReload = async (token: any) => {
       // const decoded = parseJwt(token);
       const decoded: any = jwt_decode(token);
@@ -46,6 +46,7 @@ function App() {
     };
 
     if (localStorage.getItem("token")) {
+      setIsLoading(true);
       (async () => {
         const user = await getUserWhenReload(localStorage.getItem("token"));
         dispatch({ type: ActionType.LOAD_USER, payload: user });
@@ -75,6 +76,7 @@ function App() {
         <Route path="*">
           <Redirect to="/" />
         </Route>
+        <Footer />
       </Layout>
     </>
   );

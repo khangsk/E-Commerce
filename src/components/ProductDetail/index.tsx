@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGift, faCheck } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
@@ -159,6 +160,10 @@ const ProductDetail: React.FC = () => {
   );
 
   const productId = useParams<{ id?: string }>()?.id;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   let content = <></>;
 

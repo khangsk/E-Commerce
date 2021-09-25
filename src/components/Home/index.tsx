@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import SwipeableTextMobileStepper from "./SwipeableTextMobileStepper";
 import MainContent from "../MainContent";
@@ -8,6 +9,10 @@ const HomePage: React.FC = () => {
   const { data, error, loading } = useTypedSelector(
     (state) => state.repositories
   );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const DUMMY_DATA = [
     {
