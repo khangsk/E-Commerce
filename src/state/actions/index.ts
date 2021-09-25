@@ -1,13 +1,17 @@
-import { ProductType } from "../reducers/repositoriesReducer";
+import { ProductType, UserType } from "../reducers/repositoriesReducer";
 import { ActionType } from "../action-types";
 
 export type Action =
   | {
       type: ActionType.LOGIN;
-      payload: string;
+      payload: [string, UserType];
     }
   | {
       type: ActionType.LOGOUT;
+    }
+  | {
+      type: ActionType.LOAD_USER;
+      payload: UserType;
     }
   | {
       type: ActionType.LOAD_PRODUCT;

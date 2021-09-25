@@ -1,6 +1,14 @@
 import { ActionType } from "../action-types";
 import { Action } from "../actions";
 
+export interface UserType {
+  id: string;
+  lastName: string;
+  firstName: string;
+  email: string;
+  phoneNumber: string;
+}
+
 export interface ProductType {
   ProductID: number;
   CategoryID: number;
@@ -18,10 +26,11 @@ interface RepositoriesState {
   error: string | null;
   data: ProductType[];
   token: string;
+  user: UserType;
 }
 
 const initialState = {
-  isLoggedIn: false,
+  isLoggedIn: !!localStorage.getItem("token"),
   loading: false,
   error: null,
   data: [
@@ -38,7 +47,14 @@ const initialState = {
       isDeleted: false,
     },
   ],
-  token: "",
+  token: localStorage.getItem("token") ?? "",
+  user: {
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+  },
 };
 
 const reducer = (
@@ -47,9 +63,17 @@ const reducer = (
 ): RepositoriesState => {
   switch (action.type) {
     case ActionType.LOGIN:
-      return { ...state, isLoggedIn: true, token: action.payload };
+      return {
+        ...state,
+        isLoggedIn: true,
+        token: action.payload[0],
+        user: action.payload[1],
+      };
     case ActionType.LOGOUT:
+      localStorage.removeItem("token");
       return { ...state, isLoggedIn: false, token: "" };
+    case ActionType.LOAD_USER:
+      return { ...state, user: action.payload };
     case ActionType.LOAD_PRODUCT:
       return { ...state, loading: true, error: null, data: [] };
     case ActionType.LOAD_PRODUCT_SUCCESS:

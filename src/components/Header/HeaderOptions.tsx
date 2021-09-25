@@ -6,15 +6,14 @@ import CartIcon from "../Cart/CartIcon";
 // import CartContext from "../../store/cart-context";
 import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleDown,
-  faAngleLeft,
-  faAngleRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "react-redux";
+import { ActionType } from "../../state/action-types";
 
 const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
+  const dispatch = useDispatch();
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
-  const { isLoggedIn } = useTypedSelector((state) => state.repositories);
+  const { isLoggedIn, user } = useTypedSelector((state) => state.repositories);
   // const cartCtx = useContext(CartContext);
 
   // const { items } = cartCtx;
@@ -74,9 +73,44 @@ const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
         </Link>
       )}
 
-      <Link className="link" to="/checkout">
+      {isLoggedIn && (
+        <div className="link list__category separate">
+          <FontAwesomeIcon
+            icon={faUser}
+            className="list__category__icon"
+            style={{ marginRight: "8px" }}
+          />
+          {user.firstName}
+          <ul className="select-input__list">
+            <li className="select-input__item">
+              <Link to="/category/giay-bong-da" className="select-input__link">
+                Trang của tôi
+              </Link>
+            </li>
+            <li className="select-input__item">
+              <Link
+                to="/category/quan-ao-bong-da"
+                className="select-input__link"
+              >
+                Đổi mật khẩu
+              </Link>
+            </li>
+            <li className="select-input__item">
+              <button
+                onClick={() => dispatch({ type: ActionType.LOGOUT })}
+                className="select-input__link"
+                style={{ padding: "2px 8px", cursor: "pointer" }}
+              >
+                Đăng xuất
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
+
+      {/* <Link className="link" to="/checkout">
         Liên hệ
-      </Link>
+      </Link> */}
       <button className={btnClasses} onClick={props.onClick}>
         <span className="icon">
           <CartIcon />

@@ -8,13 +8,11 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { User } from "../../firebase";
-import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Loading from "../Utils/Loading";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
-import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Copyright(props: any) {
   return (
@@ -34,34 +32,30 @@ function Copyright(props: any) {
   );
 }
 
-const theme = createTheme();
-
 export default function SignUp() {
-  const history = useHistory();
   const dispatch = useDispatch();
   const [isLoadding, setIsLoadding] = useState(false);
+
+  const [firstNameInput, setfirstNameInput] = useState("");
+  const [firstNameBlur, setfirstNameBlur] = useState(false);
+  const [lastNameInput, setlastNameInput] = useState("");
+  const [lastNameBlur, setlastNameBlur] = useState(false);
+  const [emailInput, setEmailInput] = useState(false);
+  const [emailBlur, setEmailBlur] = useState(false);
+  const [phoneInput, setphoneInput] = useState(false);
+  const [phoneBlur, setphoneBlur] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordBlur, setPasswordBlur] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
 
-    User.add({
-      email: data.get("email"),
-      firstName: data.get("firstName"),
-      lastName: data.get("lastName"),
-      phoneNumber: data.get("phone"),
-    });
-
-    if (
-      !data.get("email") ||
-      !data.get("password") ||
-      !data.get("firstName") ||
-      !data.get("lastName") ||
-      !data.get("phone")
-    ) {
-      return;
-    }
+    const email = data.get("email");
+    const password = data.get("password");
+    const firstName = data.get("firstName");
+    const lastName = data.get("lastName");
+    const phoneNumber = data.get("phone");
 
     setIsLoadding(true);
     fetch(
@@ -69,130 +63,216 @@ export default function SignUp() {
       {
         method: "POST",
         body: JSON.stringify({
-          email: data.get("email"),
-          password: data.get("password"),
+          email,
+          password,
           returnSecureToken: true,
         }),
       }
     )
       .then((res) => {
-        setIsLoadding(false);
         if (res.ok) {
           return res.json();
         } else {
           return res.json().then((data) => {
-            let errorMessage = "Authentication failed!";
+            let errorMessage = "Email đã tồn tại";
             throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
-        dispatch({ type: ActionType.LOGIN, payload: data.idToken });
-        history.replace("/");
+        (async () => {
+          const result = await User.add({
+            email,
+            firstName,
+            lastName,
+            phoneNumber,
+          });
+
+          const userId = (await result.get()).id;
+
+          dispatch({
+            type: ActionType.LOGIN,
+            payload: [
+              data.idToken,
+              { id: userId, email, firstName, lastName, phoneNumber },
+            ],
+          });
+
+          toast.success("Đăng ký thành công!");
+          setIsLoadding(false);
+        })();
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => {
+        setIsLoadding(false);
+        toast.error(err.message);
+      });
   };
 
   return (
     <>
       {isLoadding && <Loading />}
-      <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Đăng ký tài khoản
+          </Typography>
           <Box
-            sx={{
-              marginTop: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Đăng ký tài khoản
-            </Typography>
-            <Box
-              component="form"
-              noValidate={false}
-              onSubmit={handleSubmit}
-              sx={{ mt: 3 }}
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  autoComplete="fname"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="Tên"
+                  autoFocus
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setfirstNameInput(e.target.value);
+                  }}
+                  onBlur={() => setfirstNameBlur(true)}
+                  error={!firstNameInput.trim() && firstNameBlur}
+                  helperText={
+                    !firstNameInput.trim() && firstNameBlur
+                      ? "Vui lòng nhập tên"
+                      : ""
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Họ và tên đệm"
+                  name="lastName"
+                  autoComplete="lname"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setlastNameInput(e.target.value);
+                  }}
+                  onBlur={() => setlastNameBlur(true)}
+                  error={!lastNameInput.trim() && lastNameBlur}
+                  helperText={
+                    !lastNameInput.trim() && lastNameBlur
+                      ? "Vui lòng nhập họ và tên đệm"
+                      : ""
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email"
+                  name="email"
+                  autoComplete="email"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const pattern = new RegExp(
+                      /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
+                    );
+                    if (pattern.test(e.target.value)) {
+                      setEmailInput(true);
+                    } else {
+                      setEmailInput(false);
+                    }
+                  }}
+                  onBlur={() => setEmailBlur(true)}
+                  error={!emailInput && emailBlur}
+                  helperText={
+                    !emailInput && emailBlur ? "Email không chính xác" : ""
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Mật khẩu"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setPasswordInput(e.target.value);
+                  }}
+                  onBlur={() => setPasswordBlur(true)}
+                  error={passwordInput.trim().length < 6 && passwordBlur}
+                  helperText={
+                    passwordInput.trim().length < 6 && passwordBlur
+                      ? "Mật khẩu phải có ít nhất 6 ký tự"
+                      : ""
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="phone"
+                  label="Số điện thoại"
+                  type="text"
+                  id="phone"
+                  autoComplete="phone"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const pattern = new RegExp(/^0[0-9]{9}$/im);
+                    if (pattern.test(e.target.value)) {
+                      setphoneInput(true);
+                    } else {
+                      setphoneInput(false);
+                    }
+                  }}
+                  onBlur={() => setphoneBlur(true)}
+                  error={!phoneInput && phoneBlur}
+                  helperText={
+                    !phoneInput && phoneBlur
+                      ? "Vui lòng nhập số điện thoại (10 chữ số và bắt đầu bởi 0)"
+                      : ""
+                  }
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={
+                !emailInput ||
+                passwordInput.trim().length < 6 ||
+                !firstNameInput.trim().length ||
+                !lastNameInput.trim().length ||
+                !phoneInput
+              }
             >
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="fname"
-                    name="firstName"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastName"
-                    autoComplete="lname"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="new-password"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="phone"
-                    label="Phone Number"
-                    type="number"
-                    id="phone"
-                    autoComplete="phone"
-                  />
-                </Grid>
+              Đăng ký
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="/login" variant="body2">
+                  Bạn đã có tài khoản? Đăng nhập
+                </Link>
               </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Đăng ký
-              </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link href="/login" variant="body2">
-                    Bạn đã có tài khoản? Đăng nhập
-                  </Link>
-                </Grid>
-              </Grid>
-            </Box>
+            </Grid>
           </Box>
-          <Copyright sx={{ mt: 5 }} />
-        </Container>
-      </ThemeProvider>
+        </Box>
+        <Copyright sx={{ mt: 5 }} />
+      </Container>
     </>
   );
 }
