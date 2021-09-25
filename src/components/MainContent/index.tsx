@@ -32,7 +32,8 @@ const MainContent: React.FC = () => {
     const category = menuItem?.categories.find(
       (el) => el.categoryId === categoryChoice
     );
-    productsChoice = category?.products;
+
+    if (category && category.products) productsChoice = category?.products;
   }
 
   return (
@@ -49,7 +50,9 @@ const MainContent: React.FC = () => {
               <div className="home-product">
                 <div className="grid__row">
                   {productsChoice &&
-                    productsChoice.map((item) => <HomeProduct data={item} />)}
+                    productsChoice.map((item) => (
+                      <HomeProduct key={item.ProductID} data={item} />
+                    ))}
                 </div>
               </div>
             </div>

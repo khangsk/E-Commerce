@@ -63,6 +63,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       let products: ProductType[] = [];
       let categories: CategoryType[] = [];
       let menuItems: MenuItemType[] = [];
@@ -105,30 +106,13 @@ function App() {
         });
       });
 
-      console.log(products, menuItems, categories);
-
       dispatch({
         type: ActionType.LOAD_PRODUCT,
         payload: [products, categories, menuItems],
       });
 
-      // const snapshotMenuItems = await MenuItems.get();
-      // snapshotMenuItems.forEach((doc) => {
-      //   menuItems.push({
-      //     menuItemId: doc.data().name,
-      //     name: doc.data().name,
-      //     isDeleted: doc.data().isDeleted,
-      //   });
-      // });
-
-      // const snapshot = await Products.get();
-      // snapshot.forEach((doc) => {
-      //   result[doc.data().name] = doc.data();
-      //   console.log(doc.data(), doc.data().name);
+      setIsLoading(false);
     })();
-  }, []);
-
-  useEffect(() => {
     const getUserWhenReload = async (token: any) => {
       // const decoded = parseJwt(token);
       const decoded: any = jwt_decode(token);
@@ -144,11 +128,9 @@ function App() {
     };
 
     if (localStorage.getItem("token")) {
-      setIsLoading(true);
       (async () => {
         const user = await getUserWhenReload(localStorage.getItem("token"));
         dispatch({ type: ActionType.LOAD_USER, payload: user });
-        setIsLoading(false);
       })();
     }
   }, [setIsLoading, dispatch]);

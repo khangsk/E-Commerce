@@ -20,7 +20,7 @@ const Product: React.FC<{
       <div className="home-product">
         <div className="grid__row">
           {items.map((item) => (
-            <HomeProduct data={item} />
+            <HomeProduct key={item.ProductID} data={item} />
           ))}
         </div>
       </div>
