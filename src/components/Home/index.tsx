@@ -1,36 +1,28 @@
 import { useEffect } from "react";
-import styled from "styled-components";
 import SwipeableTextMobileStepper from "./SwipeableTextMobileStepper";
-import MainContent from "../MainContent";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Product from "./Product";
+import { getAllProducts } from "../../helper";
 
 const HomePage: React.FC = () => {
-  const { data, error, loading } = useTypedSelector(
-    (state) => state.repositories
-  );
+  const menuItems = useTypedSelector((state) => state.repositories.menuItems);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const DUMMY_DATA = [
-    {
-      productName: "Giày bóng đá",
-      items: data,
-    },
-    {
-      productName: "Phụ kiện",
-      items: data,
-    },
-  ];
-
   return (
     <>
       <SwipeableTextMobileStepper />
-      {DUMMY_DATA.map((product) => (
-        <Product name={product.productName} items={product.items} />
-      ))}
+      {menuItems &&
+        menuItems.map((menuItem) => (
+          <Product
+            key={menuItem.menuItemId}
+            name={menuItem.name}
+            menuItemID={menuItem.menuItemId}
+            items={getAllProducts(menuItem.categories).slice(0, 5)}
+          />
+        ))}
     </>
   );
 };

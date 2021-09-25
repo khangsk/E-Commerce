@@ -26,5 +26,6 @@ const db = firebase.firestore();
 const User = db.collection("User");
 const MenuItems = db.collection("MenuItems");
 const Categories = db.collection("Categories");
+const Products = db.collection("Products");
 
-export { storage, firebase as default, User, MenuItems, Categories };
+export { storage, firebase as default, User, MenuItems, Categories, Products };

@@ -13,10 +13,15 @@ import { useTypedSelector } from "./hooks/useTypedSelector";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
-import { User } from "./firebase";
+import { User, Products, Categories, MenuItems } from "./firebase";
 import jwt_decode from "jwt-decode";
 import { ActionType } from "./state/action-types";
-import { UserType } from "./state/reducers/repositoriesReducer";
+import {
+  ProductType,
+  UserType,
+  CategoryType,
+  MenuItemType,
+} from "./state/reducers/repositoriesReducer";
 import Loading from "./components/Utils/Loading";
 
 const Layout = styled.div`
@@ -25,10 +30,103 @@ const Layout = styled.div`
   margin: 66px auto;
 `;
 
+const getProductsOfCategory = (products: ProductType[]) => {
+  let result: { [key: string]: ProductType[] } = {};
+  products.forEach((product) => {
+    if (!result[product.CategoryID]) {
+      result[product.CategoryID] = [product];
+    } else {
+      result[product.CategoryID].push(product);
+    }
+  });
+
+  return result;
+};
+
+const getCategoriesOfMenuItem = (categories: CategoryType[]) => {
+  let result: { [key: string]: CategoryType[] } = {};
+  categories.forEach((category) => {
+    if (!result[category.menuItemId]) {
+      result[category.menuItemId] = [category];
+    } else {
+      result[category.menuItemId].push(category);
+    }
+  });
+
+  return result;
+};
+
 function App() {
   const { isLoggedIn } = useTypedSelector((state) => state.repositories);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      let products: ProductType[] = [];
+      let categories: CategoryType[] = [];
+      let menuItems: MenuItemType[] = [];
+
+      const snapshotProducts = await Products.get();
+      snapshotProducts.forEach((doc) => {
+        products.push({
+          ProductID: doc.id,
+          CategoryID: doc.data().CategoryID,
+          Name: doc.data().Name,
+          Price: doc.data().Price,
+          Discount: doc.data().Sale,
+          Description: doc.data().Description,
+          image: doc.data().Image,
+        });
+      });
+
+      const listProductsOfCategory = getProductsOfCategory(products);
+
+      const snapshotCategories = await Categories.get();
+      snapshotCategories.forEach((doc) => {
+        categories.push({
+          categoryId: doc.id,
+          menuItemId: doc.data().MenuItemID,
+          name: doc.data().Name,
+          isDeleted: doc.data().isDeleted,
+          products: listProductsOfCategory[doc.id],
+        });
+      });
+
+      const listCategoriesOfMenuItem = getCategoriesOfMenuItem(categories);
+
+      const snapshotMenuItems = await MenuItems.get();
+      snapshotMenuItems.forEach((doc) => {
+        menuItems.push({
+          menuItemId: doc.id,
+          name: doc.data().Name,
+          isDeleted: doc.data().isDeleted,
+          categories: listCategoriesOfMenuItem[doc.id],
+        });
+      });
+
+      console.log(products, menuItems, categories);
+
+      dispatch({
+        type: ActionType.LOAD_PRODUCT,
+        payload: [products, categories, menuItems],
+      });
+
+      // const snapshotMenuItems = await MenuItems.get();
+      // snapshotMenuItems.forEach((doc) => {
+      //   menuItems.push({
+      //     menuItemId: doc.data().name,
+      //     name: doc.data().name,
+      //     isDeleted: doc.data().isDeleted,
+      //   });
+      // });
+
+      // const snapshot = await Products.get();
+      // snapshot.forEach((doc) => {
+      //   result[doc.data().name] = doc.data();
+      //   console.log(doc.data(), doc.data().name);
+    })();
+  }, []);
 
   useEffect(() => {
     const getUserWhenReload = async (token: any) => {
@@ -70,7 +168,7 @@ function App() {
           {!isLoggedIn && <SignIn />}
           {isLoggedIn && <Redirect to="/" />}
         </Route>
-        <Route path="/category/:categoryName" component={MainContent} />
+        <Route path="/menu-item/:menuItemID" component={MainContent} />
         <Route path="/product-detail/:id" component={ProductDetail} />
         <Route path="/checkout" component={UploadImage} />
         <Route path="*">

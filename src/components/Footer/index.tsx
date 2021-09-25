@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./index.css";
 
 const Footer: React.FC = () => {
@@ -9,55 +10,55 @@ const Footer: React.FC = () => {
             <h3 className="footer__heading">Chăm sóc khách hàng</h3>
             <ul className="footer-list">
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Trung Tâm Trợ Giúp
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   T-Fooball Blog
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   T-Fooball Mall
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Hướng Dẫn Mua Hàng
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Hướng Dẫn Bán Hàng
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Thanh Toán
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   {" "}
                   Vận Chuyển{" "}
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Trả Hàng & Hoàn Tiền
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Chăm Sóc Khách Hàng
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Chính Sách Bảo Hành
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -65,49 +66,49 @@ const Footer: React.FC = () => {
             <h3 className="footer__heading">Về T-Fooball</h3>
             <ul className="footer-list">
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Giới Thiệu Về T-Fooball
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Tuyển Dụng
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Điều Khoản T-Fooball
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Chính Sách Bảo Mật
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Chính Hãng
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Kênh Người Bán
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Flash Sales
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Chương Trình Tiếp Thị Liên Kết T-Fooball
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   Liên Hệ Với Truyền Thông
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -141,22 +142,22 @@ const Footer: React.FC = () => {
             <h3 className="footer__heading">Theo dõi chúng tôi trên</h3>
             <ul className="footer-list">
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   <i className="footer-item__icon fab fa-facebook"></i>
                   Facebook
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   <i className="footer-item__icon fab fa-instagram"></i>
                   Instagram
-                </a>
+                </Link>
               </li>
               <li className="footer-item">
-                <a href="#" className="footer-item__link">
+                <Link to="#" className="footer-item__link">
                   <i className="footer-item__icon fab fa-linkedin"></i>
                   LinkedIn
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

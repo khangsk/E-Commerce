@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { useParams } from "react-router-dom";
+import { FormatAmount } from "../../helper";
 
 const Container = styled.div`
   width: 1200px;
@@ -155,9 +156,7 @@ const LIST_PROMOTION_MORE = [
 ];
 
 const ProductDetail: React.FC = () => {
-  const { data, error, loading } = useTypedSelector(
-    (state) => state.repositories
-  );
+  const products = useTypedSelector((state) => state.repositories.products);
 
   const productId = useParams<{ id?: string }>()?.id;
 
@@ -168,25 +167,26 @@ const ProductDetail: React.FC = () => {
   let content = <></>;
 
   if (productId) {
-    const product = data.find((el) => el.ProductID === +productId);
+    const product = products.find((el) => el.ProductID === productId);
 
     content = product ? (
       <Container>
         <div style={{ width: "50%", border: "1px solid #ccc" }}>
-          <img
-            src="https://cf.shopee.vn/file/42c51761d53b623a5bc6fcf8772d9e94"
-            alt="Images"
-            style={{ width: "90%" }}
-          />
+          <img src={product.image} alt="Images" style={{ width: "90%" }} />
         </div>
         <Description>
-          <p className="product-name">Giày Mizuno Basara Pro TF</p>
-          <span className="product-sale-number">Đã bán 1</span>
+          <p className="product-name">{product.Name}</p>
 
           <div className="product-item__price">
-            <span className="product-item__price-current">31.490.000đ</span>
-            <span className="product-item__price-old">36.990.000đ</span>
-            <span className="product-item__discount-rate">-5%</span>
+            <span className="product-item__price-current">
+              {FormatAmount(product.Price * (1 - product.Discount))}
+            </span>
+            <span className="product-item__price-old">
+              {FormatAmount(product.Price)}
+            </span>
+            <span className="product-item__discount-rate">
+              -{product.Discount * 100}%
+            </span>
           </div>
 
           <div className="product-voucher">
@@ -227,7 +227,11 @@ const ProductDetail: React.FC = () => {
                 >
                   -
                 </Button>
-                <input type="number" className="input-quantity" />
+                <input
+                  type="number"
+                  defaultValue={1}
+                  className="input-quantity"
+                />
                 <Button
                   variant="contained"
                   style={{ borderRadius: 0, minWidth: 0 }}

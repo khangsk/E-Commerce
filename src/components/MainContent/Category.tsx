@@ -1,29 +1,30 @@
 import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faListUl } from "@fortawesome/free-solid-svg-icons";
+import { CategoryType } from "../../state/reducers/repositoriesReducer";
+import { Link } from "react-router-dom";
 
-const DUMMY_DATA = ["Giày bóng đá", "Quần áo bóng đá", "Phụ kiện"];
-
-const Category: React.FC = () => {
+const Category: React.FC<{
+  categories: CategoryType[];
+  onChoseHandler: (x: string) => void;
+}> = (props) => {
   return (
-    <nav className="category">
+    <nav className="grid__column-2 category">
       <h3 className="category__heading">
         <FontAwesomeIcon icon={faListUl} className="category__heading-icon" />
         Danh mục
       </h3>
 
       <ul className="category-list">
-        {/* <li className="category-item category-item--active">
-          <a href="#" className="category-item__link">
-            Laptop
-          </a>
-        </li> */}
-
-        {DUMMY_DATA.map((category) => (
-          <li key={category} className="category-item">
-            <a href="#" className="category-item__link">
-              {category}
-            </a>
+        {props.categories.map((category) => (
+          <li key={category.categoryId} className="category-item">
+            <Link
+              to={`#`}
+              className="category-item__link"
+              onClick={() => props.onChoseHandler(category.categoryId)}
+            >
+              {category.name}
+            </Link>
           </li>
         ))}
       </ul>

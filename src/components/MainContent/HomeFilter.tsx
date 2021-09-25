@@ -4,6 +4,7 @@ import {
   faAngleLeft,
   faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const HomeFilter: React.FC = () => {
   return (
@@ -20,14 +21,14 @@ const HomeFilter: React.FC = () => {
 
         <ul className="select-input__list">
           <li className="select-input__item">
-            <a href="#" className="select-input__link">
+            <Link to="#" className="select-input__link">
               Giá: Thấp đến cao
-            </a>
+            </Link>
           </li>
           <li className="select-input__item">
-            <a href="#" className="select-input__link">
+            <Link to="#" className="select-input__link">
               Giá: Cao đến thấp
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
@@ -38,8 +39,8 @@ const HomeFilter: React.FC = () => {
         </span>
 
         <div className="home-filter__page-control">
-          <a
-            href=""
+          <Link
+            to=""
             className="
           home-filter__page-btn home-filter__page-btn--disabled
         "
@@ -48,13 +49,13 @@ const HomeFilter: React.FC = () => {
               icon={faAngleLeft}
               className="home-filter__page-icon"
             />
-          </a>
-          <a href="" className="home-filter__page-btn">
+          </Link>
+          <Link to="" className="home-filter__page-btn">
             <FontAwesomeIcon
               icon={faAngleRight}
               className="home-filter__page-icon"
             />
-          </a>
+          </Link>
         </div>
       </div>
     </div>

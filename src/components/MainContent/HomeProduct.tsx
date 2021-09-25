@@ -5,16 +5,8 @@ import { ProductType } from "../../state/reducers/repositoriesReducer";
 import { FormatAmount } from "../../helper";
 
 const HomeProduct: React.FC<{ data: ProductType }> = (props) => {
-  const {
-    ProductID,
-    CategoryID,
-    Name,
-    Price,
-    Discount,
-    Description,
-    image,
-    isDeleted,
-  } = props.data;
+  const { ProductID, CategoryID, Name, Price, Discount, Description, image } =
+    props.data;
   return (
     <div className="grid__column-2-4">
       <Link to={`/product-detail/${ProductID}`} className="home-product-item">

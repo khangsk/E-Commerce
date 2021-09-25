@@ -1,4 +1,9 @@
-import { ProductType, UserType } from "../reducers/repositoriesReducer";
+import {
+  ProductType,
+  CategoryType,
+  MenuItemType,
+  UserType,
+} from "../reducers/repositoriesReducer";
 import { ActionType } from "../action-types";
 
 export type Action =
@@ -15,12 +20,5 @@ export type Action =
     }
   | {
       type: ActionType.LOAD_PRODUCT;
-    }
-  | {
-      type: ActionType.LOAD_PRODUCT_SUCCESS;
-      payload: ProductType[];
-    }
-  | {
-      type: ActionType.LOAD_PRODUCT_ERROR;
-      payload: string;
+      payload: [ProductType[], CategoryType[], MenuItemType[]];
     };

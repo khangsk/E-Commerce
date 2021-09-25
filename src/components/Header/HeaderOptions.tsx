@@ -14,6 +14,7 @@ const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
   const dispatch = useDispatch();
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
   const { isLoggedIn, user } = useTypedSelector((state) => state.repositories);
+  const { menuItems } = useTypedSelector((state) => state.repositories);
   // const cartCtx = useContext(CartContext);
 
   // const { items } = cartCtx;
@@ -45,21 +46,16 @@ const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
         Cửa hàng
         <FontAwesomeIcon icon={faAngleDown} className="list__category__icon" />
         <ul className="select-input__list">
-          <li className="select-input__item">
-            <Link to="/category/giay-bong-da" className="select-input__link">
-              Giày bóng đá
-            </Link>
-          </li>
-          <li className="select-input__item">
-            <Link to="/category/quan-ao-bong-da" className="select-input__link">
-              Quần áo bóng đá
-            </Link>
-          </li>
-          <li className="select-input__item">
-            <Link to="/category/phu-kien" className="select-input__link">
-              Phụ kiện
-            </Link>
-          </li>
+          {menuItems.map((el) => (
+            <li className="select-input__item" key={el.menuItemId}>
+              <Link
+                to={`/menu-item/${el.menuItemId}`}
+                className="select-input__link"
+              >
+                {el.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </div>
       {!isLoggedIn && (
