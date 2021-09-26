@@ -3,4 +3,5 @@ export enum ActionType {
   LOGOUT = "logout",
   LOAD_PRODUCT = "load_product",
   LOAD_USER = "load_user",
+  ORDER = "order",
 }

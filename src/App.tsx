@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import SignIn from "./components/Utils/SignIn";
 import SignUp from "./components/Utils/SignUp";
 import styled from "styled-components";
@@ -13,6 +13,7 @@ import { useTypedSelector } from "./hooks/useTypedSelector";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { User, Products, Categories, MenuItems } from "./firebase";
 import jwt_decode from "jwt-decode";
 import { ActionType } from "./state/action-types";
@@ -24,6 +25,7 @@ import {
 } from "./state/reducers/repositoriesReducer";
 import Loading from "./components/Utils/Loading";
 import Cart from "./components/Cart";
+import UserRoute from "./helper/UserRouter";
 
 const Layout = styled.div`
   width: 1200px;
@@ -62,6 +64,8 @@ function App() {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
+  const location = useLocation<{ from: { pathname: string } }>();
+
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -79,6 +83,9 @@ function App() {
           Discount: doc.data().Sale,
           Description: doc.data().Description,
           image: doc.data().Image,
+          Producer: doc.data().Producer,
+          Source: doc.data().Source,
+          Star: doc.data().Star,
         });
       });
 
@@ -92,8 +99,11 @@ function App() {
           name: doc.data().Name,
           isDeleted: doc.data().isDeleted,
           products: listProductsOfCategory[doc.id],
+          Promotion: doc.data().Promotion,
         });
       });
+
+      console.log(categories);
 
       const listCategoriesOfMenuItem = getCategoriesOfMenuItem(categories);
 
@@ -145,22 +155,28 @@ function App() {
         <Route path="/" exact component={Home} />
         <Route path="/register">
           {!isLoggedIn && <SignUp />}
-          {isLoggedIn && <Redirect to="/" />}
+          {isLoggedIn && location.state && (
+            <Redirect to={location.state.from} />
+          )}
+          {isLoggedIn && !location.state && <Redirect to="/" />}
         </Route>
         <Route path="/login">
           {!isLoggedIn && <SignIn />}
-          {isLoggedIn && <Redirect to="/" />}
+          {isLoggedIn && location.state && (
+            <Redirect to={location.state.from} />
+          )}
+          {isLoggedIn && !location.state && <Redirect to="/" />}
         </Route>
-        <Route path="/menu-item/:menuItemID" component={MainContent} />
-        <Route path="/product-detail/:id" component={ProductDetail} />
-        <Route path="/checkout" component={UploadImage} />
-        <Route path="/cart">
+        <Route exact path="/menu-item/:menuItemID" component={MainContent} />
+        <Route exact path="/product-detail/:id" component={ProductDetail} />
+        <Route exact path="/cart">
           {isLoggedIn && <Cart />}
           {!isLoggedIn && <Redirect to="/login" />}
         </Route>
-        <Route path="*">
+        <Route path="/checkout" component={UploadImage} />
+        {/* <Route path="*">
           <Redirect to="/" />
-        </Route>
+        </Route> */}
         <Footer />
       </Layout>
     </>

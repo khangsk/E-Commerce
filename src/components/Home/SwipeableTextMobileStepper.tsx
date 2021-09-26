@@ -9,29 +9,27 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import SwipeableViews from "react-swipeable-views";
 import { autoPlay } from "react-swipeable-views-utils";
+import { Carousel } from "../../firebase";
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const images = [
   {
-    label: "San Francisco – Oakland Bay Bridge, United States",
     imgPath:
-      "https://cdn.yousport.vn/Media/Slides/920nh%C3%A2nxxx450.png?v=2&auto=format&fit=crop&w=400&h=250&q=60",
+      "https://firebasestorage.googleapis.com/v0/b/efootball-e37a5.appspot.com/o/carousel%2Fcarousel_4.png?alt=media&token=d2c926a9-de0e-4ed9-922f-99552c0e3260",
   },
   {
-    label: "Bird",
     imgPath:
-      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
+      "https://firebasestorage.googleapis.com/v0/b/efootball-e37a5.appspot.com/o/carousel%2Fcarousel_3.png?alt=media&token=07872e4d-82bc-41f7-b558-bc0460dfc554",
   },
   {
-    label: "Bali, Indonesia",
     imgPath:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80",
+      "https://firebasestorage.googleapis.com/v0/b/efootball-e37a5.appspot.com/o/carousel%2Fcarousel_2.png?alt=media&token=31126d25-2ce4-44a8-8bd3-f6fbc270ad31",
   },
   {
-    label: "Goč, Serbia",
     imgPath:
-      "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60",
+      // "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60",
+      "https://firebasestorage.googleapis.com/v0/b/efootball-e37a5.appspot.com/o/carousel%2Fcarousel_1.jpg?alt=media&token=cf4bcad5-a7a3-4822-a895-2b628ef7f579",
   },
 ];
 
@@ -53,20 +51,18 @@ function SwipeableTextMobileStepper() {
   };
 
   return (
-    <Box sx={{ width: 800, maxWidth: "100%", flexGrow: 1, mx: "auto" }}>
+    <Box sx={{ width: 1200, maxWidth: "100%", flexGrow: 1, mx: "auto" }}>
       <Paper
         square
         elevation={0}
         sx={{
           display: "flex",
           alignItems: "center",
-          height: 50,
+          height: 0,
           pl: 2,
           bgcolor: "background.default",
         }}
-      >
-        <Typography>{images[activeStep].label}</Typography>
-      </Paper>
+      ></Paper>
       <AutoPlaySwipeableViews
         axis={theme.direction === "rtl" ? "x-reverse" : "x"}
         index={activeStep}
@@ -74,7 +70,7 @@ function SwipeableTextMobileStepper() {
         enableMouseEvents
       >
         {images.map((step, index) => (
-          <div key={step.label}>
+          <div key={Math.random()}>
             {Math.abs(activeStep - index) <= 2 ? (
               <Box
                 component="img"
@@ -88,7 +84,7 @@ function SwipeableTextMobileStepper() {
                   mt: 2,
                 }}
                 src={step.imgPath}
-                alt={step.label}
+                alt={"images"}
               />
             ) : null}
           </div>

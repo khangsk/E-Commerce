@@ -27,5 +27,14 @@ const User = db.collection("User");
 const MenuItems = db.collection("MenuItems");
 const Categories = db.collection("Categories");
 const Products = db.collection("Products");
+const Carousel = db.collection("Carousel");
 
-export { storage, firebase as default, User, MenuItems, Categories, Products };
+export {
+  storage,
+  firebase as default,
+  User,
+  MenuItems,
+  Categories,
+  Products,
+  Carousel,
+};

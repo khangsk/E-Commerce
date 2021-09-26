@@ -271,7 +271,7 @@
 }
 
 .home-product-item__rating {
-  font-size: 0.4375rem;
+  font-size: 0.8rem;
   /* zoom: 0.1;    Thu nhỏ lại */
   /* transform: scale(0.4);   Thu nhỏ lại*/
   /* transform-origin: right;   đổi vị trí tâm sang phải*/
@@ -297,7 +297,7 @@
   display: flex;
   margin: 4px 10px 0;
   color: #595959;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 300;
   padding-bottom: 12px;
 }

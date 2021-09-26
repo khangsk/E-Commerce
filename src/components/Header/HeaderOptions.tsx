@@ -1,9 +1,7 @@
-import { useContext, useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
-
 import CartIcon from "../Cart/CartIcon";
-// import CartContext from "../../store/cart-context";
 import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -14,32 +12,27 @@ import { toast } from "react-toastify";
 const HeaderOptions: React.FC = (props) => {
   const dispatch = useDispatch();
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
-  const { isLoggedIn, user } = useTypedSelector((state) => state.repositories);
+  const { isLoggedIn, user, productsOrder } = useTypedSelector(
+    (state) => state.repositories
+  );
   const { menuItems } = useTypedSelector((state) => state.repositories);
-  // const cartCtx = useContext(CartContext);
-
-  // const { items } = cartCtx;
-
-  // const numberOfCartItems = items.reduce((curNumber, item) => {
-  //   return curNumber + item.amount;
-  // }, 0);
 
   const btnClasses = `button link ${btnIsHighlighted ? "bump" : ""}`;
 
-  // useEffect(() => {
-  //   if (items.length === 0) {
-  //     return;
-  //   }
-  //   setBtnIsHighlighted(true);
+  useEffect(() => {
+    if (productsOrder.length === 0) {
+      return;
+    }
+    setBtnIsHighlighted(true);
 
-  //   const timer = setTimeout(() => {
-  //     setBtnIsHighlighted(false);
-  //   }, 300);
+    const timer = setTimeout(() => {
+      setBtnIsHighlighted(false);
+    }, 300);
 
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, [items]);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [productsOrder]);
 
   return (
     <div className="cssmenu">
@@ -104,21 +97,19 @@ const HeaderOptions: React.FC = (props) => {
           </ul>
         </div>
       )}
-
-      {/* <Link className="link" to="/checkout">
-        Liên hệ
-      </Link> */}
       <Link
         to="/cart"
         className={btnClasses}
         onClick={() => {
-          if (!isLoggedIn) toast.warning("Vui lòng đăng nhập!");
+          if (!isLoggedIn) {
+            toast.warning("Vui lòng đăng nhập!");
+          }
         }}
       >
         <span className="icon">
           <CartIcon />
         </span>
-        <span className="badge">{/* {numberOfCartItems} */}3</span>
+        <span className="badge">{productsOrder.length}</span>
       </Link>
     </div>
   );

@@ -1,3 +1,4 @@
+import { User } from "../../firebase";
 import { ActionType } from "../action-types";
 import { Action } from "../actions";
 
@@ -7,6 +8,7 @@ export interface UserType {
   firstName: string;
   email: string;
   phoneNumber: string;
+  order: Array<ItemOrderType>;
 }
 
 export interface MenuItemType {
@@ -22,6 +24,7 @@ export interface CategoryType {
   name: string;
   isDeleted: boolean;
   products: ProductType[];
+  Promotion: string[];
 }
 
 export interface ProductType {
@@ -32,6 +35,18 @@ export interface ProductType {
   Discount: number;
   Description: string;
   image: string;
+  Producer: string;
+  Source: string;
+  Star: number;
+}
+
+export interface ItemOrderType {
+  productId: string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+  totalAmount: number;
 }
 
 interface RepositoriesState {
@@ -43,6 +58,7 @@ interface RepositoriesState {
   menuItems: MenuItemType[];
   token: string;
   user: UserType;
+  productsOrder: ItemOrderType[];
 }
 
 const initialState = {
@@ -59,7 +75,9 @@ const initialState = {
     lastName: "",
     email: "",
     phoneNumber: "",
+    order: [],
   },
+  productsOrder: [],
 };
 
 const reducer = (
@@ -73,12 +91,22 @@ const reducer = (
         isLoggedIn: true,
         token: action.payload[0],
         user: action.payload[1],
+        productsOrder: action.payload[1].order,
       };
     case ActionType.LOGOUT:
       localStorage.removeItem("token");
-      return { ...state, isLoggedIn: false, token: "" };
+      return {
+        ...initialState,
+        products: state.products,
+        categories: state.categories,
+        menuItems: state.menuItems,
+      };
     case ActionType.LOAD_USER:
-      return { ...state, user: action.payload };
+      return {
+        ...state,
+        user: action.payload,
+        productsOrder: action.payload.order,
+      };
     case ActionType.LOAD_PRODUCT:
       return {
         ...state,
@@ -87,6 +115,43 @@ const reducer = (
         products: action.payload[0],
         categories: action.payload[1],
         menuItems: action.payload[2],
+      };
+    case ActionType.ORDER:
+      const newProduct = state.productsOrder.find(
+        (el) => el.productId === action.payload.productId
+      );
+
+      (async () => {
+        const snapshot = await User.doc(state.user.id).get();
+        const data = snapshot.data();
+        if (data) {
+          const order = data.order;
+          const item = order.find(
+            (el: ItemOrderType) => el.productId === action.payload.productId
+          );
+
+          if (item) {
+            item.quantity += action.payload.quantity;
+            User.doc(state.user.id).update({
+              order,
+            });
+          } else {
+            User.doc(state.user.id).update({
+              order: [...order, action.payload],
+            });
+          }
+        }
+      })();
+
+      if (newProduct) {
+        newProduct.quantity += action.payload.quantity;
+        newProduct.totalAmount = newProduct.price * newProduct.quantity;
+        return state;
+      }
+
+      return {
+        ...state,
+        productsOrder: [...state.productsOrder, action.payload],
       };
     default:
       return state;

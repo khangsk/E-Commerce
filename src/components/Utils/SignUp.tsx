@@ -68,6 +68,7 @@ export default function SignUp() {
             firstName,
             lastName,
             phoneNumber,
+            order: [],
           });
 
           const userId = (await result.get()).id;
@@ -76,7 +77,14 @@ export default function SignUp() {
             type: ActionType.LOGIN,
             payload: [
               data.idToken,
-              { id: userId, email, firstName, lastName, phoneNumber },
+              {
+                id: userId,
+                email,
+                firstName,
+                lastName,
+                phoneNumber,
+                order: [],
+              },
             ],
           });
 

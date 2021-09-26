@@ -13,14 +13,28 @@ import Loading from "../Utils/Loading";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
+import { useHistory, useLocation } from "react-router-dom";
+import { useTypedSelector } from "../../hooks/useTypedSelector";
 
-export default function SignIn() {
+const SignIn: React.FC = () => {
   const dispatch = useDispatch();
+  // const history = useHistory();
+  // const location = useLocation<{ from: { pathname: string } }>();
+  // const { isLoggedIn } = useTypedSelector((state) => state.repositories);
+
   const [isLoadding, setIsLoadding] = useState(false);
   const [emailInput, setEmailInput] = useState(false);
   const [emailBlur, setEmailBlur] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordBlur, setPasswordBlur] = useState(false);
+
+  // console.log(history, location);
+
+  // if (isLoggedIn) {
+  //   if (location.state && location.state.from) {
+  //     history.replace(location.state.from);
+  //   } else history.replace("/");
+  // }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -169,4 +183,6 @@ export default function SignIn() {
       </Container>
     </>
   );
-}
+};
+
+export default SignIn;

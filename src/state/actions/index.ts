@@ -3,6 +3,7 @@ import {
   CategoryType,
   MenuItemType,
   UserType,
+  ItemOrderType,
 } from "../reducers/repositoriesReducer";
 import { ActionType } from "../action-types";
 
@@ -21,4 +22,8 @@ export type Action =
   | {
       type: ActionType.LOAD_PRODUCT;
       payload: [ProductType[], CategoryType[], MenuItemType[]];
+    }
+  | {
+      type: ActionType.ORDER;
+      payload: ItemOrderType;
     };

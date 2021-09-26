@@ -1,11 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGift, faCheck } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { FormatAmount } from "../../helper";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { ActionType } from "../../state/action-types";
+import { User } from "../../firebase";
 
 const Container = styled.div`
   width: 1200px;
@@ -156,7 +160,15 @@ const LIST_PROMOTION_MORE = [
 ];
 
 const ProductDetail: React.FC = () => {
-  const products = useTypedSelector((state) => state.repositories.products);
+  const { products, isLoggedIn, user, categories } = useTypedSelector(
+    (state) => state.repositories
+  );
+
+  const [quantity, setQuantity] = useState(1);
+
+  const history = useHistory();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
   const productId = useParams<{ id?: string }>()?.id;
 
@@ -203,18 +215,44 @@ const ProductDetail: React.FC = () => {
             <strong>Ưu đãi thêm</strong>
           </div>
           <ul>
-            {LIST_PROMOTION_MORE.map((el) => (
-              <li>
-                <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} />{" "}
-                {el}
-              </li>
-            ))}
+            {categories
+              .find((el) => el.categoryId === product.CategoryID)
+              ?.Promotion.map((el) => (
+                <li key={el}>
+                  <FontAwesomeIcon icon={faCheck} style={{ color: "green" }} />{" "}
+                  {el}
+                </li>
+              ))}
           </ul>
 
           <div className="purchase">
             <Button
               variant="contained"
               style={{ backgroundColor: "#ff3945", minWidth: "50%" }}
+              onClick={() => {
+                const productChose = {
+                  productId: product.ProductID,
+                  name: product.Name,
+                  image: product.image,
+                  price: product.Price,
+                  quantity,
+                  totalAmount: product.Price * quantity,
+                };
+                if (!isLoggedIn) {
+                  toast.warning("Vui lòng đăng nhập!");
+                  history.push({
+                    pathname: "/login",
+                    state: { from: location.pathname },
+                  });
+                } else if (quantity === 0) {
+                  toast.warning("Số lượng sản phẩm tối thiểu là 1");
+                } else {
+                  dispatch({
+                    type: ActionType.ORDER,
+                    payload: productChose,
+                  });
+                }
+              }}
             >
               Chọn mua
             </Button>
@@ -224,17 +262,40 @@ const ProductDetail: React.FC = () => {
                 <Button
                   variant="contained"
                   style={{ borderRadius: 0, minWidth: 0 }}
+                  onClick={() => {
+                    if (quantity <= 0) {
+                      return;
+                    }
+                    setQuantity((state) => state - 1);
+                  }}
                 >
                   -
                 </Button>
                 <input
                   type="number"
-                  defaultValue={1}
                   className="input-quantity"
+                  value={quantity}
+                  onChange={(e) => {
+                    if (+e.target.value > 10) {
+                      toast.warning(
+                        "Số lượng sản phẩm phải nhỏ hơn hoặc bằng 10!"
+                      );
+                      setQuantity(10);
+                    } else {
+                      setQuantity(+e.target.value);
+                    }
+                  }}
+                  pattern="[1-9]*"
                 />
                 <Button
                   variant="contained"
                   style={{ borderRadius: 0, minWidth: 0 }}
+                  onClick={() => {
+                    if (quantity >= 10) {
+                      return;
+                    }
+                    setQuantity((state) => state + 1);
+                  }}
                 >
                   +
                 </Button>
