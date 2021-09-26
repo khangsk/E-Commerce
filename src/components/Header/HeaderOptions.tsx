@@ -8,9 +8,11 @@ import { faAngleDown, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
-const HeaderOptions: React.FC = (props) => {
+const HeaderOptions: React.FC = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
   const { isLoggedIn, user, productsOrder } = useTypedSelector(
     (state) => state.repositories
@@ -87,7 +89,10 @@ const HeaderOptions: React.FC = (props) => {
             </li>
             <li className="select-input__item">
               <button
-                onClick={() => dispatch({ type: ActionType.LOGOUT })}
+                onClick={() => {
+                  dispatch({ type: ActionType.LOGOUT });
+                  history.replace("/");
+                }}
                 className="select-input__link"
                 style={{ padding: "2px 8px", cursor: "pointer" }}
               >

@@ -1,9 +1,8 @@
 import * as React from "react";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import "./index.css";
 import { FormatAmount } from "../../helper";
-import { User } from "../../firebase";
 
 const columns: GridColDef[] = [
   { field: "id", hide: true },
@@ -11,13 +10,11 @@ const columns: GridColDef[] = [
   { field: "price", headerName: "Đơn giá", width: 130 },
   { field: "quantity", headerName: "Số lượng", width: 130 },
   { field: "totalAmount", headerName: "Số tiền", width: 130 },
-  { field: "delete", headerName: "Xóa", width: 130 },
+  { field: "delete", headerName: "Xóa", width: 130, sortable: false },
 ];
 
 const Cart: React.FC = () => {
-  const { productsOrder, user } = useTypedSelector(
-    (state) => state.repositories
-  );
+  const { productsOrder } = useTypedSelector((state) => state.repositories);
 
   return productsOrder.length ? (
     <div style={{ marginTop: "10px" }}>

@@ -51,8 +51,6 @@ export interface ItemOrderType {
 
 interface RepositoriesState {
   isLoggedIn: boolean;
-  loading: boolean;
-  error: string | null;
   products: ProductType[];
   categories: CategoryType[];
   menuItems: MenuItemType[];
@@ -63,8 +61,6 @@ interface RepositoriesState {
 
 const initialState = {
   isLoggedIn: !!localStorage.getItem("token"),
-  loading: false,
-  error: null,
   products: [],
   categories: [],
   menuItems: [],
@@ -93,29 +89,32 @@ const reducer = (
         user: action.payload[1],
         productsOrder: action.payload[1].order,
       };
+
     case ActionType.LOGOUT:
       localStorage.removeItem("token");
       return {
         ...initialState,
+        isLoggedIn: false,
         products: state.products,
         categories: state.categories,
         menuItems: state.menuItems,
       };
+
     case ActionType.LOAD_USER:
       return {
         ...state,
         user: action.payload,
         productsOrder: action.payload.order,
       };
+
     case ActionType.LOAD_PRODUCT:
       return {
         ...state,
-        loading: true,
-        error: null,
         products: action.payload[0],
         categories: action.payload[1],
         menuItems: action.payload[2],
       };
+
     case ActionType.ORDER:
       const newProduct = state.productsOrder.find(
         (el) => el.productId === action.payload.productId
@@ -132,6 +131,7 @@ const reducer = (
 
           if (item) {
             item.quantity += action.payload.quantity;
+            item.totalAmount = item.quantity * item.price;
             User.doc(state.user.id).update({
               order,
             });
@@ -153,6 +153,58 @@ const reducer = (
         ...state,
         productsOrder: [...state.productsOrder, action.payload],
       };
+
+    case ActionType.UPDATE_ORDER:
+      (async () => {
+        const snapshot = await User.doc(state.user.id).get();
+        const data = snapshot.data();
+        if (data) {
+          const order = data.order;
+          if (action.payload.quantity === 0) {
+            const newOrder = order.filter(
+              (el: ItemOrderType) => el.productId !== action.payload.productId
+            );
+            User.doc(state.user.id).update({
+              order: newOrder,
+            });
+          } else {
+            const item = order.find(
+              (el: ItemOrderType) => el.productId === action.payload.productId
+            );
+
+            if (item) {
+              item.quantity = action.payload.quantity;
+              item.totalAmount = item.price * item.quantity;
+              User.doc(state.user.id).update({
+                order,
+              });
+            }
+          }
+        }
+      })();
+
+      if (action.payload.quantity === 0) {
+        const newProductsOrder = state.productsOrder.filter(
+          (el: ItemOrderType) => el.productId !== action.payload.productId
+        );
+
+        return {
+          ...state,
+          productsOrder: newProductsOrder,
+        };
+      }
+
+      const productUpdate = state.productsOrder.find(
+        (el: ItemOrderType) => el.productId === action.payload.productId
+      );
+
+      if (productUpdate) {
+        productUpdate.quantity = action.payload.quantity;
+        productUpdate.totalAmount =
+          productUpdate.price * productUpdate.quantity;
+      }
+      return state;
+
     default:
       return state;
   }

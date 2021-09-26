@@ -9,7 +9,6 @@ import { FormatAmount } from "../../helper";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
-import { User } from "../../firebase";
 
 const Container = styled.div`
   width: 1200px;
@@ -152,15 +151,8 @@ const Description = styled.div`
   }
 `;
 
-const LIST_PROMOTION_MORE = [
-  "FREESHIP TOÀN QUỐC ĐƠN HÀNG < 500.000",
-  "Giảm 20% phụ kiện và quần áo bóng đá mua kèm giày",
-  "Bảo hành keo trọn đời",
-  "Đổi trả trong 30 ngày",
-];
-
 const ProductDetail: React.FC = () => {
-  const { products, isLoggedIn, user, categories } = useTypedSelector(
+  const { products, isLoggedIn, categories } = useTypedSelector(
     (state) => state.repositories
   );
 

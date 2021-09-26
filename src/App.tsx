@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import SignIn from "./components/Utils/SignIn";
 import SignUp from "./components/Utils/SignUp";
 import styled from "styled-components";
@@ -25,7 +25,6 @@ import {
 } from "./state/reducers/repositoriesReducer";
 import Loading from "./components/Utils/Loading";
 import Cart from "./components/Cart";
-import UserRoute from "./helper/UserRouter";
 
 const Layout = styled.div`
   width: 1200px;
@@ -60,15 +59,15 @@ const getCategoriesOfMenuItem = (categories: CategoryType[]) => {
 };
 
 function App() {
-  const { isLoggedIn } = useTypedSelector((state) => state.repositories);
+  const { isLoggedIn, token } = useTypedSelector((state) => state.repositories);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const location = useLocation<{ from: { pathname: string } }>();
 
   useEffect(() => {
+    setIsLoading(true);
     (async () => {
-      setIsLoading(true);
       let products: ProductType[] = [];
       let categories: CategoryType[] = [];
       let menuItems: MenuItemType[] = [];
@@ -103,8 +102,6 @@ function App() {
         });
       });
 
-      console.log(categories);
-
       const listCategoriesOfMenuItem = getCategoriesOfMenuItem(categories);
 
       const snapshotMenuItems = await MenuItems.get();
@@ -121,11 +118,10 @@ function App() {
         type: ActionType.LOAD_PRODUCT,
         payload: [products, categories, menuItems],
       });
-
       setIsLoading(false);
     })();
+
     const getUserWhenReload = async (token: any) => {
-      // const decoded = parseJwt(token);
       const decoded: any = jwt_decode(token);
 
       const snapshot = await User.where("email", "==", decoded.email).get();
@@ -139,12 +135,19 @@ function App() {
     };
 
     if (localStorage.getItem("token")) {
-      (async () => {
-        const user = await getUserWhenReload(localStorage.getItem("token"));
-        dispatch({ type: ActionType.LOAD_USER, payload: user });
-      })();
+      const decoded: any = jwt_decode(token);
+      const expirationTime = decoded.exp * 1000 - 60000;
+
+      if (Date.now() >= expirationTime) {
+        dispatch({ type: ActionType.LOGOUT });
+      } else {
+        (async () => {
+          const user = await getUserWhenReload(localStorage.getItem("token"));
+          dispatch({ type: ActionType.LOAD_USER, payload: user });
+        })();
+      }
     }
-  }, [setIsLoading, dispatch]);
+  }, [setIsLoading, dispatch, token]);
 
   return (
     <>

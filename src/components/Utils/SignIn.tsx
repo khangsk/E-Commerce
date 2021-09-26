@@ -13,28 +13,15 @@ import Loading from "../Utils/Loading";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
-import { useHistory, useLocation } from "react-router-dom";
-import { useTypedSelector } from "../../hooks/useTypedSelector";
 
 const SignIn: React.FC = () => {
   const dispatch = useDispatch();
-  // const history = useHistory();
-  // const location = useLocation<{ from: { pathname: string } }>();
-  // const { isLoggedIn } = useTypedSelector((state) => state.repositories);
 
   const [isLoadding, setIsLoadding] = useState(false);
   const [emailInput, setEmailInput] = useState(false);
   const [emailBlur, setEmailBlur] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordBlur, setPasswordBlur] = useState(false);
-
-  // console.log(history, location);
-
-  // if (isLoggedIn) {
-  //   if (location.state && location.state.from) {
-  //     history.replace(location.state.from);
-  //   } else history.replace("/");
-  // }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -82,8 +69,8 @@ const SignIn: React.FC = () => {
           localStorage.setItem("token", data.idToken);
 
           toast("Đăng nhập thành công!");
-          setIsLoadding(false);
         })();
+        setIsLoadding(false);
       })
       .catch((err) => {
         setIsLoadding(false);

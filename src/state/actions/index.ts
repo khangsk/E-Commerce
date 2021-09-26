@@ -26,4 +26,8 @@ export type Action =
   | {
       type: ActionType.ORDER;
       payload: ItemOrderType;
+    }
+  | {
+      type: ActionType.UPDATE_ORDER;
+      payload: ItemOrderType;
     };
