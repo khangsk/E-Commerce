@@ -23,6 +23,7 @@ import {
   MenuItemType,
 } from "./state/reducers/repositoriesReducer";
 import Loading from "./components/Utils/Loading";
+import Cart from "./components/Cart";
 
 const Layout = styled.div`
   width: 1200px;
@@ -153,6 +154,10 @@ function App() {
         <Route path="/menu-item/:menuItemID" component={MainContent} />
         <Route path="/product-detail/:id" component={ProductDetail} />
         <Route path="/checkout" component={UploadImage} />
+        <Route path="/cart">
+          {isLoggedIn && <Cart />}
+          {!isLoggedIn && <Redirect to="/login" />}
+        </Route>
         <Route path="*">
           <Redirect to="/" />
         </Route>

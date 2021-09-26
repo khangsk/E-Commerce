@@ -9,8 +9,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
+import { toast } from "react-toastify";
 
-const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
+const HeaderOptions: React.FC = (props) => {
   const dispatch = useDispatch();
   const [btnIsHighlighted, setBtnIsHighlighted] = useState(false);
   const { isLoggedIn, user } = useTypedSelector((state) => state.repositories);
@@ -23,7 +24,7 @@ const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
   //   return curNumber + item.amount;
   // }, 0);
 
-  const btnClasses = `button ${btnIsHighlighted ? "bump" : ""}`;
+  const btnClasses = `button link ${btnIsHighlighted ? "bump" : ""}`;
 
   // useEffect(() => {
   //   if (items.length === 0) {
@@ -107,12 +108,18 @@ const HeaderOptions: React.FC<{ onClick: () => void }> = (props) => {
       {/* <Link className="link" to="/checkout">
         Liên hệ
       </Link> */}
-      <button className={btnClasses} onClick={props.onClick}>
+      <Link
+        to="/cart"
+        className={btnClasses}
+        onClick={() => {
+          if (!isLoggedIn) toast.warning("Vui lòng đăng nhập!");
+        }}
+      >
         <span className="icon">
           <CartIcon />
         </span>
         <span className="badge">{/* {numberOfCartItems} */}3</span>
-      </button>
+      </Link>
     </div>
   );
 };

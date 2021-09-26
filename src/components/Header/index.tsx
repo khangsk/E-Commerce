@@ -3,8 +3,6 @@ import HeaderOptions from "./HeaderOptions";
 import "./index.css";
 
 const Header: React.FC = () => {
-  const onShowCart = () => {};
-
   return (
     <header className="header">
       <div className="container">
@@ -13,7 +11,7 @@ const Header: React.FC = () => {
             E-Football
           </Link>
         </h1>
-        <HeaderOptions onClick={onShowCart} />
+        <HeaderOptions />
       </div>
     </header>
   );
