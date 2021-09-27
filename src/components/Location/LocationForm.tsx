@@ -30,29 +30,38 @@ const LocationForm: React.FC<{
       onSubmit={onSubmit}
       // style={{}}
     >
-      <div style={{ width: "30%" }}>
-        <Select
-          name="cityId"
-          key={Math.random()}
-          isDisabled={cityOptions.length === 0}
-          options={cityOptions}
-          onChange={(option) => onCitySelect(option)}
-          placeholder="Tỉnh/Thành"
-          defaultValue={selectedCity}
-        />
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ width: "49%" }}>
+          <Select
+            name="cityId"
+            key={Math.random()}
+            isDisabled={cityOptions.length === 0}
+            options={cityOptions}
+            onChange={(option) => onCitySelect(option)}
+            placeholder="Tỉnh/Thành"
+            defaultValue={selectedCity}
+          />
+        </div>
+        <div style={{ width: "49%" }}>
+          <Select
+            name="districtId"
+            key={Math.random()}
+            isDisabled={districtOptions.length === 0}
+            options={districtOptions}
+            onChange={(option) => onDistrictSelect(option)}
+            placeholder="Quận/Huyện"
+            defaultValue={selectedDistrict}
+          />
+        </div>
       </div>
-      <div style={{ width: "30%", margin: "16px 0" }}>
-        <Select
-          name="districtId"
-          key={Math.random()}
-          isDisabled={districtOptions.length === 0}
-          options={districtOptions}
-          onChange={(option) => onDistrictSelect(option)}
-          placeholder="Quận/Huyện"
-          defaultValue={selectedDistrict}
-        />
-      </div>
-      <div style={{ width: "30%" }}>
+      <div style={{ width: "100%", margin: "12px 0" }}>
         <Select
           name="wardId"
           key={Math.random()}

@@ -122,6 +122,7 @@ const Cart: React.FC = () => {
                             });
                           } else {
                             itemChange.quantity--;
+                            itemChange.totalAmount -= itemChange.price;
                             dispatch({
                               type: ActionType.UPDATE_ORDER,
                               payload: productsOrder,
@@ -137,6 +138,32 @@ const Cart: React.FC = () => {
                       className="input-quantity"
                       value={row.quantity}
                       pattern="[1-9]*"
+                      onChange={(e) => {
+                        const itemChange = productsOrder.find(
+                          (product) => product.productId === row.productId
+                        );
+                        if (itemChange) {
+                          if (+e.target.value > 10) {
+                            toast.warning(
+                              "Số lượng sản phẩm phải nhỏ hơn hoặc bằng 10!"
+                            );
+                            itemChange.quantity = 10;
+                            itemChange.totalAmount = itemChange.price * 10;
+                          } else if (+e.target.value === 0) {
+                            toast.warning("Số lượng sản phẩm tối thiểu là 1");
+                            itemChange.quantity = 1;
+                            itemChange.totalAmount = itemChange.price;
+                          } else {
+                            itemChange.quantity = +e.target.value;
+                            itemChange.totalAmount =
+                              itemChange.price * +e.target.value;
+                          }
+                          dispatch({
+                            type: ActionType.UPDATE_ORDER,
+                            payload: productsOrder,
+                          });
+                        }
+                      }}
                     />
                     <Button
                       variant="contained"
@@ -159,6 +186,7 @@ const Cart: React.FC = () => {
                             );
                           } else {
                             itemChange.quantity++;
+                            itemChange.totalAmount += itemChange.price;
                             dispatch({
                               type: ActionType.UPDATE_ORDER,
                               payload: productsOrder,
