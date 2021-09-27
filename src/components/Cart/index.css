@@ -1,0 +1,30 @@
+.group-input {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  margin-top: 8px;
+  justify-content: center;
+}
+
+.input-quantity {
+  padding: 8px 8px 9px 8px;
+  border-top: 2px solid #1976d2;
+  border-bottom: 2px solid #1976d2;
+  border-left: 0;
+  border-right: 0;
+  box-shadow: none;
+  -moz-appearance: textfield; /* Firefox */
+  text-align: center;
+  width: 60px;
+}
+
+.input-quantity:focus {
+  outline: #1976d2;
+}
+
+.input-quantity::-webkit-outer-spin-button,
+.input-quantity::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}

@@ -29,5 +29,5 @@ export type Action =
     }
   | {
       type: ActionType.UPDATE_ORDER;
-      payload: ItemOrderType;
+      payload: ItemOrderType[];
     };
