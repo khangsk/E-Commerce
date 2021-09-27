@@ -4,6 +4,7 @@ import {
   MenuItemType,
   UserType,
   ItemOrderType,
+  OrderHistoryType,
 } from "../reducers/repositoriesReducer";
 import { ActionType } from "../action-types";
 
@@ -30,4 +31,8 @@ export type Action =
   | {
       type: ActionType.UPDATE_ORDER;
       payload: ItemOrderType[];
+    }
+  | {
+      type: ActionType.CHECKOUT;
+      payload: OrderHistoryType;
     };

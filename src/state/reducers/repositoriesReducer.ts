@@ -9,6 +9,7 @@ export interface UserType {
   email: string;
   phoneNumber: string;
   order: Array<ItemOrderType>;
+  orderHistory: Array<OrderHistoryType>;
 }
 
 export interface MenuItemType {
@@ -49,6 +50,15 @@ export interface ItemOrderType {
   totalAmount: number;
 }
 
+export interface OrderHistoryType {
+  userId: string;
+  name: string;
+  phone: string;
+  address: string;
+  order: ItemOrderType[];
+  date: string;
+}
+
 interface RepositoriesState {
   isLoggedIn: boolean;
   products: ProductType[];
@@ -57,6 +67,7 @@ interface RepositoriesState {
   token: string;
   user: UserType;
   productsOrder: ItemOrderType[];
+  orderHistory: OrderHistoryType[];
 }
 
 const initialState = {
@@ -72,8 +83,10 @@ const initialState = {
     email: "",
     phoneNumber: "",
     order: [],
+    orderHistory: [],
   },
   productsOrder: [],
+  orderHistory: [],
 };
 
 const reducer = (
@@ -163,6 +176,16 @@ const reducer = (
         productsOrder: action.payload,
       };
 
+    case ActionType.CHECKOUT:
+      User.doc(state.user.id).update({
+        order: [],
+        orderHistory: [...state.orderHistory, action.payload],
+      });
+      return {
+        ...state,
+        orderHistory: [...state.orderHistory, action.payload],
+        productsOrder: [],
+      };
     default:
       return state;
   }

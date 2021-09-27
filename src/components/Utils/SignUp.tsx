@@ -69,6 +69,7 @@ export default function SignUp() {
             lastName,
             phoneNumber,
             order: [],
+            orderHistory: [],
           });
 
           const userId = (await result.get()).id;

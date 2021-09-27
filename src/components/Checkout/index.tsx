@@ -11,6 +11,9 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
+import { Order } from "../../firebase";
+import { ActionType } from "../../state/action-types";
+import { toast } from "react-toastify";
 
 const Checkout: React.FC = () => {
   const { productsOrder, user } = useTypedSelector(
@@ -18,6 +21,14 @@ const Checkout: React.FC = () => {
   );
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const [nameInput, setNameInput] = useState(
+    user.lastName + " " + user.firstName
+  );
+  const [phoneInput, setphoneInput] = useState(user.phoneNumber);
+  const [address, setAddress] = useState("");
+  const [addressBlur, setAddressBlur] = useState(false);
+  const [paymenMethod, setPaymenMethod] = useState("cash");
 
   const [city, setCity] = useState<any>();
   const [district, setDistrict] = useState<any>();
@@ -38,13 +49,6 @@ const Checkout: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const [nameInput, setNameInput] = useState(
-    user.lastName + " " + user.firstName
-  );
-  const [phoneInput, setphoneInput] = useState(user.phoneNumber);
-  const [address, setAddress] = useState("");
-  const [addressBlur, setAddressBlur] = useState(false);
 
   useEffect(() => {
     setphoneInput(user.phoneNumber);
@@ -146,8 +150,14 @@ const Checkout: React.FC = () => {
               value="cash"
               control={<Radio />}
               label="Thanh toán khi nhận hàng"
+              onClick={() => setPaymenMethod("cash")}
             />
-            <FormControlLabel value="momo" control={<Radio />} label="Momo" />
+            <FormControlLabel
+              value="momo"
+              control={<Radio />}
+              label="Momo"
+              onClick={() => setPaymenMethod("momo")}
+            />
           </RadioGroup>
         </FormControl>
         <div
@@ -187,7 +197,7 @@ const Checkout: React.FC = () => {
               !ward ||
               !address
             }
-            onClick={() => {
+            onClick={async () => {
               if (
                 !!nameInput &&
                 !!phoneInput &&
@@ -196,7 +206,8 @@ const Checkout: React.FC = () => {
                 !!ward &&
                 !!address
               ) {
-                console.log({
+                const orderInfo = {
+                  userId: user.id,
                   name: nameInput,
                   phone: phoneInput,
                   address:
@@ -209,7 +220,17 @@ const Checkout: React.FC = () => {
                     city.label,
                   order: productsOrder,
                   date: new Date(Date.now()).toString(),
-                });
+                };
+                if (paymenMethod === "cash") {
+                  const result = await Order.add(orderInfo);
+                  if (result) {
+                    toast.success("Đặt hàng thành công!");
+                  }
+                  dispatch({ type: ActionType.CHECKOUT, payload: orderInfo });
+                  history.replace("/");
+                }
+                console.log();
+                console.log(paymenMethod);
               }
             }}
           >
