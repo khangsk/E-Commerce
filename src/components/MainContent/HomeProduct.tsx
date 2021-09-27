@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar, faHeart, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { ProductType } from "../../state/reducers/repositoriesReducer";
 import { FormatAmount } from "../../helper";
@@ -20,24 +20,26 @@ const HomeProduct: React.FC<{ data: ProductType }> = (props) => {
         <h4 className="home-product-item__name">{Name}</h4>
         <div className="home-product-item__price">
           <span className="home-product-item__price-old">
-            {FormatAmount(Price)}
+            {Discount !== 0 ? FormatAmount(Price) : ""}
           </span>
           <span className="home-product-item__price-current">
             {FormatAmount(Price * (1 - Discount))}
           </span>
         </div>
         <div className="home-product-item__action">
-          {/* <span
-            className="
+          {Star > 4 && (
+            <span
+              className="
                             home-product-item__like
                             home-product-item__like--liked
                           "
-          >
-            <FontAwesomeIcon
-              icon={faHeart}
-              className="home-product-item__like-icon-fill"
-            />
-          </span> */}
+            >
+              <FontAwesomeIcon
+                icon={faHeart}
+                className="home-product-item__like-icon-fill"
+              />
+            </span>
+          )}
           <div className="home-product-item__rating">
             {Array.from({ length: Star }, (_, index) => (
               <FontAwesomeIcon
@@ -61,20 +63,24 @@ const HomeProduct: React.FC<{ data: ProductType }> = (props) => {
           <span className="home-product-item__origin-name">{Source}</span>
         </div>
 
-        {/* <div className="home-product-item__favorite">
-          <FontAwesomeIcon
-            icon={faCheck}
-            className="home-product-item__favorite_icon"
-          />
-          <span>Yêu thích</span>
-        </div> */}
+        {Star > 4 && (
+          <div className="home-product-item__favorite">
+            <FontAwesomeIcon
+              icon={faCheck}
+              className="home-product-item__favorite_icon"
+            />
+            <span>Yêu thích</span>
+          </div>
+        )}
 
-        <div className="home-product-item__sale-off">
-          <span className="home-product-item__sale-off-percent">
-            {Discount * 100}%
-          </span>
-          <span className="home-product-item__sale-off-label">GIẢM</span>
-        </div>
+        {Discount !== 0 && (
+          <div className="home-product-item__sale-off">
+            <span className="home-product-item__sale-off-percent">
+              {Discount * 100}%
+            </span>
+            <span className="home-product-item__sale-off-label">GIẢM</span>
+          </div>
+        )}
       </Link>
     </div>
   );

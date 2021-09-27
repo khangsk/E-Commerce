@@ -14,6 +14,7 @@ const MainContent: React.FC = () => {
   const { menuItems } = useTypedSelector((state) => state.repositories);
   const [categoryChoice, setCategoryChoice] = useState("");
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState("new");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -21,6 +22,10 @@ const MainContent: React.FC = () => {
 
   const onChoseHandler = (e: string) => {
     setCategoryChoice(e);
+  };
+
+  const onChangeFilterHandler = (e: string) => {
+    setFilter(e);
   };
 
   const menuItemID = useParams<{ menuItemID?: string }>()?.menuItemID;
@@ -40,6 +45,16 @@ const MainContent: React.FC = () => {
     if (category && category.products) productsChoice = category?.products;
   }
 
+  if (filter === "lowToHigh") {
+    productsChoice.sort((a: ProductType, b: ProductType) =>
+      a.Price > b.Price ? 1 : b.Price > a.Price ? -1 : 0
+    );
+  } else if (filter === "highToLow") {
+    productsChoice.sort((a: ProductType, b: ProductType) =>
+      a.Price > b.Price ? -1 : b.Price > a.Price ? 1 : 0
+    );
+  }
+
   const sizeProducts = productsChoice.length;
 
   return (
@@ -52,7 +67,10 @@ const MainContent: React.FC = () => {
               onChoseHandler={onChoseHandler}
             />
             <div className="grid__column-10">
-              <HomeFilter />
+              <HomeFilter
+                filter={filter}
+                onChangeFilterHandler={onChangeFilterHandler}
+              />
               <div className="home-product">
                 <div className="grid__row">
                   {productsChoice &&

@@ -4,7 +4,12 @@ import { useTypedSelector } from "../../hooks/useTypedSelector";
 import CartIcon from "../Cart/CartIcon";
 import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faUser,
+  faSignOutAlt,
+  faFutbol,
+} from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
@@ -48,6 +53,10 @@ const HeaderOptions: React.FC = () => {
                 to={`/menu-item/${el.menuItemId}`}
                 className="select-input__link"
               >
+                <FontAwesomeIcon
+                  icon={faFutbol}
+                  style={{ marginRight: "4px" }}
+                />
                 {el.name}
               </Link>
             </li>
@@ -73,20 +82,20 @@ const HeaderOptions: React.FC = () => {
             style={{ marginRight: "8px" }}
           />
           {user.firstName}
-          <ul className="select-input__list">
+          <ul className="select-category__list">
             <li className="select-input__item">
-              <Link to="/category/giay-bong-da" className="select-input__link">
+              <Link to="/my" className="select-input__link">
                 Trang của tôi
               </Link>
             </li>
-            <li className="select-input__item">
+            {/* <li className="select-input__item">
               <Link
                 to="/category/quan-ao-bong-da"
                 className="select-input__link"
               >
                 Đổi mật khẩu
               </Link>
-            </li>
+            </li> */}
             <li className="select-input__item">
               <button
                 onClick={() => {
@@ -94,9 +103,21 @@ const HeaderOptions: React.FC = () => {
                   history.replace("/");
                 }}
                 className="select-input__link"
-                style={{ padding: "2px 8px", cursor: "pointer" }}
+                style={{
+                  padding: "2px 8px",
+                  cursor: "pointer",
+                  marginTop: "4px",
+                  marginLeft: "-6px",
+                  border: "none",
+                  outline: "none",
+                  backgroundColor: "var(--white-color)",
+                }}
               >
                 Đăng xuất
+                <FontAwesomeIcon
+                  icon={faSignOutAlt}
+                  style={{ marginLeft: "8px" }}
+                />
               </button>
             </li>
           </ul>

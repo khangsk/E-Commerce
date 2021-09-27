@@ -34,7 +34,7 @@ const Description = styled.div`
   }
 
   .product-item__price-current {
-    color: #ff424e;
+    color: var(--red-color);
     font-size: 32px;
     line-height: 40px;
     margin-right: 8px;
@@ -51,10 +51,10 @@ const Description = styled.div`
   .product-item__discount-rate {
     font-weight: 400;
     margin-left: 8px;
-    border: 1px solid rgb(255, 66, 78);
+    border: 1px solid var(--red-color);
     border-radius: 2px;
     background-color: rgb(255, 240, 241);
-    color: rgb(255, 66, 78);
+    color: var(--red-color);
     line-height: 18px;
     font-size: 14px;
     padding: 0px 4px;
@@ -63,7 +63,7 @@ const Description = styled.div`
   .product-voucher {
     display: block;
     overflow: hidden;
-    border: 1px solid #d60c0c;
+    border: 1px solid var(--primary-color);
     position: relative;
     background: #fff;
     padding-bottom: 5px;
@@ -77,7 +77,7 @@ const Description = styled.div`
     color: #fff;
     padding: 6px 10px;
     text-transform: uppercase;
-    background: #d60c0c;
+    background: var(--primary-color);
     border-bottom: 1px solid #ddd;
     font-weight: 400;
   }
@@ -220,7 +220,10 @@ const ProductDetail: React.FC = () => {
           <div className="purchase">
             <Button
               variant="contained"
-              style={{ backgroundColor: "#ff3945", minWidth: "50%" }}
+              style={{
+                backgroundColor: "var(--red-color)",
+                minWidth: "50%",
+              }}
               onClick={() => {
                 const productChose = {
                   productId: product.ProductID,

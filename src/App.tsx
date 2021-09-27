@@ -8,7 +8,6 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
 import ProductDetail from "./components/ProductDetail";
-import UploadImage from "./UploadImage";
 import { useTypedSelector } from "./hooks/useTypedSelector";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,6 +24,7 @@ import {
 } from "./state/reducers/repositoriesReducer";
 import Loading from "./components/Utils/Loading";
 import Cart from "./components/Cart";
+import Checkout from "./components/Checkout";
 
 const Layout = styled.div`
   width: 1200px;
@@ -176,12 +176,12 @@ function App() {
           {isLoggedIn && <Cart />}
           {!isLoggedIn && <Redirect to="/login" />}
         </Route>
-        <Route path="/checkout" component={UploadImage} />
-        {/* <Route path="*">
-          <Redirect to="/" />
-        </Route> */}
-        <Footer />
+        <Route exact path="/checkout">
+          {isLoggedIn && <Checkout />}
+          {!isLoggedIn && <Redirect to="/login" />}
+        </Route>
       </Layout>
+      <Footer />
     </>
   );
 }
