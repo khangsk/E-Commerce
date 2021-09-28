@@ -13,6 +13,7 @@ import Loading from "../Utils/Loading";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
+import { Helmet } from "react-helmet";
 
 const SignIn: React.FC = () => {
   const dispatch = useDispatch();
@@ -80,6 +81,10 @@ const SignIn: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Đăng nhập</title>
+      </Helmet>
       {isLoadding && <Loading />}
       <Container component="main" maxWidth="xs">
         <Box

@@ -3,6 +3,7 @@ import SwipeableTextMobileStepper from "./SwipeableTextMobileStepper";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Product from "./Product";
 import { getAllProducts } from "../../helper";
+import { Helmet } from "react-helmet";
 
 const HomePage: React.FC = () => {
   const menuItems = useTypedSelector((state) => state.repositories.menuItems);
@@ -13,6 +14,10 @@ const HomePage: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>E-Football</title>
+      </Helmet>
       <SwipeableTextMobileStepper />
       {menuItems &&
         menuItems.map((menuItem) => (

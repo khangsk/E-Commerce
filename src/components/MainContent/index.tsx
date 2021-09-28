@@ -9,6 +9,7 @@ import { getAllProducts } from "../../helper";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { ProductType } from "../../state/reducers/repositoriesReducer";
+import { Helmet } from "react-helmet";
 
 const MainContent: React.FC = () => {
   const { menuItems } = useTypedSelector((state) => state.repositories);
@@ -59,6 +60,10 @@ const MainContent: React.FC = () => {
 
   return (
     <div className="app__container">
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{menuItem ? menuItem.name : "Sản phẩm"}</title>
+      </Helmet>
       <div className="grid">
         {menuItem && (
           <div className="grid__row app-content">
