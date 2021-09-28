@@ -11,6 +11,13 @@ import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { Helmet } from "react-helmet";
 import { TextField } from "@mui/material";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
 
 const Container = styled.div`
   width: 1200px;
@@ -167,15 +174,14 @@ const ProductDetail: React.FC = () => {
 
   const productId = useParams<{ id?: string }>()?.id;
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   let content = <></>;
 
   if (productId) {
     const product = products.find((el) => el.ProductID === productId);
-    console.log(product);
     if (product)
       content = (
         <>
@@ -394,9 +400,41 @@ const ProductDetail: React.FC = () => {
               </Button>
             </div>
 
-            {product.comments?.map((comment) => (
-              <div>{comment.content}</div>
-            ))}
+            <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+              {product.comments?.map((comment) => (
+                <div key={comment.id}>
+                  <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={comment.userName}
+                        src="/static/images/avatar/1.jpg"
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      secondary={comment.date}
+                      primary={
+                        <>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            {comment.userName}
+                          </Typography>
+                          {` — ${comment.content}`}
+                        </>
+                      }
+                    />
+                  </ListItem>
+                  <Divider
+                    variant="inset"
+                    component="li"
+                    style={{ margin: "8px 0" }}
+                  />
+                </div>
+              ))}
+            </List>
           </div>
         </>
       );

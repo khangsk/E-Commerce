@@ -29,8 +29,8 @@ export const getAllProducts = (categories: CategoryType[]) => {
 
 export const FortmatDate = (x: number) => {
   const date = new Date(x);
-  const day = date.getDay();
-  const month = date.getMonth();
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
   const year = date.getFullYear();
   return `Ngày ${day}, tháng ${month}, năm ${year}`;
 };

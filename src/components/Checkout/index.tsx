@@ -235,8 +235,6 @@ const Checkout: React.FC = () => {
                     dispatch({ type: ActionType.CHECKOUT, payload: orderInfo });
                     history.replace("/");
                   }
-                  console.log();
-                  console.log(paymenMethod);
                 }
               }}
             >
