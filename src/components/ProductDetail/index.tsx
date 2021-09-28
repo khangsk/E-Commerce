@@ -18,6 +18,11 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const Container = styled.div`
   width: 1200px;
@@ -178,6 +183,12 @@ const ProductDetail: React.FC = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   let content = <></>;
 
   if (productId) {
@@ -246,77 +257,118 @@ const ProductDetail: React.FC = () => {
                     minWidth: "50%",
                   }}
                   onClick={() => {
-                    const productChose = {
-                      productId: product.ProductID,
-                      name: product.Name,
-                      image: product.image,
-                      price: product.Price,
-                      quantity,
-                      totalAmount: product.Price * quantity,
-                    };
-                    if (!isLoggedIn) {
-                      toast.warning("Vui lòng đăng nhập!");
-                      history.push({
-                        pathname: "/login",
-                        state: { from: location.pathname },
-                      });
-                    } else if (quantity === 0) {
-                      toast.warning("Số lượng sản phẩm tối thiểu là 1");
+                    if (user.email === "admin@gmail.com") {
+                      setOpen(true);
                     } else {
-                      dispatch({
-                        type: ActionType.ORDER,
-                        payload: productChose,
-                      });
+                      const productChose = {
+                        productId: product.ProductID,
+                        name: product.Name,
+                        image: product.image,
+                        price: product.Price,
+                        quantity,
+                        totalAmount: product.Price * quantity,
+                      };
+                      if (!isLoggedIn) {
+                        toast.warning("Vui lòng đăng nhập!");
+                        history.push({
+                          pathname: "/login",
+                          state: { from: location.pathname },
+                        });
+                      } else if (quantity === 0) {
+                        toast.warning("Số lượng sản phẩm tối thiểu là 1");
+                      } else {
+                        dispatch({
+                          type: ActionType.ORDER,
+                          payload: productChose,
+                        });
+                      }
                     }
                   }}
                 >
-                  Chọn mua
+                  {user.email === "admin@gmail.com"
+                    ? "Xóa sản phẩm"
+                    : "Chọn mua"}
                 </Button>
-                <div className="quantity">
-                  <span style={{ marginLeft: "36px" }}>Số lượng</span>
-                  <div className="group-input">
+                <Dialog
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">
+                    {"Xóa sản phẩm?"}
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      Bạn chắc chắn muốn xóa sản phẩm này chứ?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Hủy bỏ</Button>
                     <Button
-                      variant="contained"
-                      style={{ borderRadius: 0, minWidth: 0 }}
                       onClick={() => {
-                        if (quantity <= 0) {
-                          return;
-                        }
-                        setQuantity((state) => state - 1);
+                        setOpen(false);
+                        dispatch({
+                          type: ActionType.ADMIN_DELETE_PRODUCT,
+                          payload: product.ProductID,
+                        });
+                        toast.success("Xóa thành công sản phẩm!");
+                        history.replace("/");
                       }}
+                      autoFocus
                     >
-                      -
+                      Xóa
                     </Button>
-                    <input
-                      type="number"
-                      className="input-quantity"
-                      value={quantity}
-                      onChange={(e) => {
-                        if (+e.target.value > 10) {
-                          toast.warning(
-                            "Số lượng sản phẩm phải nhỏ hơn hoặc bằng 10!"
-                          );
-                          setQuantity(10);
-                        } else {
-                          setQuantity(+e.target.value);
-                        }
-                      }}
-                      pattern="[1-9]*"
-                    />
-                    <Button
-                      variant="contained"
-                      style={{ borderRadius: 0, minWidth: 0 }}
-                      onClick={() => {
-                        if (quantity >= 10) {
-                          return;
-                        }
-                        setQuantity((state) => state + 1);
-                      }}
-                    >
-                      +
-                    </Button>
+                  </DialogActions>
+                </Dialog>
+                ;
+                {user.email !== "admin@gmail.com" && (
+                  <div className="quantity">
+                    <span style={{ marginLeft: "36px" }}>Số lượng</span>
+                    <div className="group-input">
+                      <Button
+                        variant="contained"
+                        style={{ borderRadius: 0, minWidth: 0 }}
+                        onClick={() => {
+                          if (quantity <= 0) {
+                            return;
+                          }
+                          setQuantity((state) => state - 1);
+                        }}
+                      >
+                        -
+                      </Button>
+                      <input
+                        type="number"
+                        className="input-quantity"
+                        value={quantity}
+                        onChange={(e) => {
+                          if (+e.target.value > 10) {
+                            toast.warning(
+                              "Số lượng sản phẩm phải nhỏ hơn hoặc bằng 10!"
+                            );
+                            setQuantity(10);
+                          } else {
+                            setQuantity(+e.target.value);
+                          }
+                        }}
+                        pattern="[1-9]*"
+                      />
+                      <Button
+                        variant="contained"
+                        style={{ borderRadius: 0, minWidth: 0 }}
+                        onClick={() => {
+                          if (quantity >= 10) {
+                            return;
+                          }
+                          setQuantity((state) => state + 1);
+                        }}
+                      >
+                        +
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </Description>
           </Container>

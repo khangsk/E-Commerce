@@ -143,6 +143,6 @@
 .list__category__icon {
   font-size: 0.875rem;
   position: relative;
-  top: 1px;
+  top: -1px;
   margin-left: 4px;
 }

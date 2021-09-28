@@ -48,6 +48,7 @@ export interface ProductType {
   Source: string;
   Star: number;
   comments: CommentType[];
+  isDeleted: boolean;
 }
 
 export interface ItemOrderType {
@@ -214,6 +215,56 @@ const reducer = (
         };
       }
       return state;
+    case ActionType.ADMIN_DELETE_PRODUCT:
+      const newProducts = state.products.filter(
+        (p) => p.ProductID !== action.payload
+      );
+
+      Products.doc(action.payload).update({
+        isDeleted: true,
+      });
+
+      const newCategory = state.categories.find((el) => {
+        const newProducts = el.products.filter(
+          (p) => p.ProductID !== action.payload
+        );
+        if (newProducts.length === el.products.length) {
+          return false;
+        } else {
+          el.products = newProducts;
+          return true;
+        }
+      });
+
+      if (newCategory) {
+        const newMenuItem = state.menuItems.find((el) => {
+          const newCat = el.categories.filter(
+            (cat) => cat.categoryId !== newCategory.categoryId
+          );
+          if (newCat.length === el.categories.length) {
+            return false;
+          } else {
+            el.categories = newCat;
+            return true;
+          }
+        });
+
+        if (newMenuItem) {
+          return {
+            ...state,
+            products: newProducts,
+            categories: state.categories,
+            menuItems: state.menuItems,
+          };
+        }
+      }
+
+      return {
+        ...state,
+        products: newProducts,
+        categories: [],
+        menuItems: [],
+      };
     default:
       return state;
   }

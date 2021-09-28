@@ -40,4 +40,8 @@ export type Action =
   | {
       type: ActionType.ADD_COMMENT;
       payload: CommentType;
+    }
+  | {
+      type: ActionType.ADMIN_DELETE_PRODUCT;
+      payload: string;
     };

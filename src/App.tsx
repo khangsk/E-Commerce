@@ -74,19 +74,21 @@ function App() {
 
       const snapshotProducts = await Products.get();
       snapshotProducts.forEach((doc) => {
-        products.push({
-          ProductID: doc.id,
-          CategoryID: doc.data().CategoryID,
-          Name: doc.data().Name,
-          Price: doc.data().Price,
-          Discount: doc.data().Sale,
-          Description: doc.data().Description,
-          image: doc.data().Image,
-          Producer: doc.data().Producer,
-          Source: doc.data().Source,
-          Star: doc.data().Star,
-          comments: doc.data().comments,
-        });
+        if (!doc.data().isDeleted)
+          products.push({
+            ProductID: doc.id,
+            CategoryID: doc.data().CategoryID,
+            Name: doc.data().Name,
+            Price: doc.data().Price,
+            Discount: doc.data().Sale,
+            Description: doc.data().Description,
+            image: doc.data().Image,
+            Producer: doc.data().Producer,
+            Source: doc.data().Source,
+            Star: doc.data().Star,
+            comments: doc.data().comments,
+            isDeleted: false,
+          });
       });
 
       const listProductsOfCategory = getProductsOfCategory(products);

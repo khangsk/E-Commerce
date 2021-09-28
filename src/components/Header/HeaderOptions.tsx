@@ -75,7 +75,11 @@ const HeaderOptions: React.FC = () => {
       )}
 
       {isLoggedIn && (
-        <div className="link list__category separate">
+        <div
+          className={`link list__category ${
+            user.email === "admin@gmail.com" ? "" : "separate"
+          }`}
+        >
           <FontAwesomeIcon
             icon={faUser}
             className="list__category__icon"
@@ -123,20 +127,22 @@ const HeaderOptions: React.FC = () => {
           </ul>
         </div>
       )}
-      <Link
-        to="/cart"
-        className={btnClasses}
-        onClick={() => {
-          if (!isLoggedIn) {
-            toast.warning("Vui lòng đăng nhập!");
-          }
-        }}
-      >
-        <span className="icon">
-          <CartIcon />
-        </span>
-        <span className="badge">{productsOrder.length}</span>
-      </Link>
+      {user.email !== "admin@gmail.com" && (
+        <Link
+          to="/cart"
+          className={btnClasses}
+          onClick={() => {
+            if (!isLoggedIn) {
+              toast.warning("Vui lòng đăng nhập!");
+            }
+          }}
+        >
+          <span className="icon">
+            <CartIcon />
+          </span>
+          <span className="badge">{productsOrder.length}</span>
+        </Link>
+      )}
     </div>
   );
 };
