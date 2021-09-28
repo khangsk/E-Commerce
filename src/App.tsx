@@ -85,6 +85,7 @@ function App() {
           Producer: doc.data().Producer,
           Source: doc.data().Source,
           Star: doc.data().Star,
+          comments: doc.data().comments,
         });
       });
 

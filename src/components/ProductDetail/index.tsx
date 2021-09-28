@@ -5,11 +5,12 @@ import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import { FormatAmount } from "../../helper";
+import { FormatAmount, FortmatDate } from "../../helper";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { Helmet } from "react-helmet";
+import { TextField } from "@mui/material";
 
 const Container = styled.div`
   width: 1200px;
@@ -153,11 +154,12 @@ const Description = styled.div`
 `;
 
 const ProductDetail: React.FC = () => {
-  const { products, isLoggedIn, categories } = useTypedSelector(
+  const { products, isLoggedIn, categories, user } = useTypedSelector(
     (state) => state.repositories
   );
 
   const [quantity, setQuantity] = useState(1);
+  const [newComment, setNewComment] = useState("");
 
   const history = useHistory();
   const location = useLocation();
@@ -165,148 +167,238 @@ const ProductDetail: React.FC = () => {
 
   const productId = useParams<{ id?: string }>()?.id;
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   let content = <></>;
 
   if (productId) {
     const product = products.find((el) => el.ProductID === productId);
+    console.log(product);
     if (product)
       content = (
-        <Container>
-          <Helmet>
-            <meta charSet="utf-8" />
-            <title>{product.Name ?? "Sản phẩm"}</title>
-          </Helmet>
-          <div style={{ width: "50%", border: "1px solid #ccc" }}>
-            <img src={product.image} alt="Images" style={{ width: "90%" }} />
+        <>
+          <Container>
+            <Helmet>
+              <meta charSet="utf-8" />
+              <title>{product.Name ?? "Sản phẩm"}</title>
+            </Helmet>
+            <div style={{ width: "50%", border: "1px solid #ccc" }}>
+              <img src={product.image} alt="Images" style={{ width: "90%" }} />
+            </div>
+            <Description>
+              <p className="product-name">{product.Name}</p>
+
+              <div className="product-item__price">
+                <span className="product-item__price-current">
+                  {FormatAmount(product.Price * (1 - product.Discount))}
+                </span>
+                <span className="product-item__price-old">
+                  {FormatAmount(product.Price)}
+                </span>
+                <span className="product-item__discount-rate">
+                  -{product.Discount * 100}%
+                </span>
+              </div>
+
+              <div className="product-voucher">
+                <strong className="product-voucher-title">
+                  KHUYẾN MÃI ĐẶC BIỆT
+                </strong>
+                <span className="product-voucher-title-2">
+                  <FontAwesomeIcon
+                    icon={faGift}
+                    style={{ marginRight: "8px" }}
+                  />
+                  XẢ Hàng mùa dịch
+                </span>
+              </div>
+
+              <div className="promotion-more">
+                <strong>Ưu đãi thêm</strong>
+              </div>
+              <ul>
+                {categories
+                  .find((el) => el.categoryId === product.CategoryID)
+                  ?.Promotion.map((el) => (
+                    <li key={el}>
+                      <FontAwesomeIcon
+                        icon={faCheck}
+                        style={{ color: "green" }}
+                      />{" "}
+                      {el}
+                    </li>
+                  ))}
+              </ul>
+
+              <div className="purchase">
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: "var(--red-color)",
+                    minWidth: "50%",
+                  }}
+                  onClick={() => {
+                    const productChose = {
+                      productId: product.ProductID,
+                      name: product.Name,
+                      image: product.image,
+                      price: product.Price,
+                      quantity,
+                      totalAmount: product.Price * quantity,
+                    };
+                    if (!isLoggedIn) {
+                      toast.warning("Vui lòng đăng nhập!");
+                      history.push({
+                        pathname: "/login",
+                        state: { from: location.pathname },
+                      });
+                    } else if (quantity === 0) {
+                      toast.warning("Số lượng sản phẩm tối thiểu là 1");
+                    } else {
+                      dispatch({
+                        type: ActionType.ORDER,
+                        payload: productChose,
+                      });
+                    }
+                  }}
+                >
+                  Chọn mua
+                </Button>
+                <div className="quantity">
+                  <span style={{ marginLeft: "36px" }}>Số lượng</span>
+                  <div className="group-input">
+                    <Button
+                      variant="contained"
+                      style={{ borderRadius: 0, minWidth: 0 }}
+                      onClick={() => {
+                        if (quantity <= 0) {
+                          return;
+                        }
+                        setQuantity((state) => state - 1);
+                      }}
+                    >
+                      -
+                    </Button>
+                    <input
+                      type="number"
+                      className="input-quantity"
+                      value={quantity}
+                      onChange={(e) => {
+                        if (+e.target.value > 10) {
+                          toast.warning(
+                            "Số lượng sản phẩm phải nhỏ hơn hoặc bằng 10!"
+                          );
+                          setQuantity(10);
+                        } else {
+                          setQuantity(+e.target.value);
+                        }
+                      }}
+                      pattern="[1-9]*"
+                    />
+                    <Button
+                      variant="contained"
+                      style={{ borderRadius: 0, minWidth: 0 }}
+                      onClick={() => {
+                        if (quantity >= 10) {
+                          return;
+                        }
+                        setQuantity((state) => state + 1);
+                      }}
+                    >
+                      +
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Description>
+          </Container>
+          <div style={{ backgroundColor: "var(--white-color)" }}>
+            <p
+              style={{
+                backgroundColor: "var(--primary-color)",
+                color: "var(--white-color)",
+                padding: "1rem 2rem",
+                fontSize: "1rem",
+              }}
+            >
+              Mô tả sản phẩm
+            </p>
+            <p
+              style={{
+                padding: "1.5rem 3rem",
+                fontSize: "1rem",
+              }}
+            >
+              {product.Description}
+            </p>
           </div>
-          <Description>
-            <p className="product-name">{product.Name}</p>
-
-            <div className="product-item__price">
-              <span className="product-item__price-current">
-                {FormatAmount(product.Price * (1 - product.Discount))}
-              </span>
-              <span className="product-item__price-old">
-                {FormatAmount(product.Price)}
-              </span>
-              <span className="product-item__discount-rate">
-                -{product.Discount * 100}%
-              </span>
-            </div>
-
-            <div className="product-voucher">
-              <strong className="product-voucher-title">
-                KHUYẾN MÃI ĐẶC BIỆT
-              </strong>
-              <span className="product-voucher-title-2">
-                <FontAwesomeIcon icon={faGift} style={{ marginRight: "8px" }} />
-                XẢ Hàng mùa dịch
-              </span>
-            </div>
-
-            <div className="promotion-more">
-              <strong>Ưu đãi thêm</strong>
-            </div>
-            <ul>
-              {categories
-                .find((el) => el.categoryId === product.CategoryID)
-                ?.Promotion.map((el) => (
-                  <li key={el}>
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      style={{ color: "green" }}
-                    />{" "}
-                    {el}
-                  </li>
-                ))}
-            </ul>
-
-            <div className="purchase">
+          <div style={{ backgroundColor: "var(--white-color)" }}>
+            <p
+              style={{
+                backgroundColor: "var(--primary-color)",
+                color: "var(--white-color)",
+                padding: "1rem 2rem",
+                fontSize: "1rem",
+              }}
+            >
+              Bình luận về sản phẩm
+            </p>
+            <div style={{ padding: "0 1rem", position: "relative" }}>
+              <TextField
+                id="standard-basic"
+                label="Viết bình luận của bạn"
+                variant="standard"
+                style={{
+                  width: "100%",
+                }}
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
               <Button
                 variant="contained"
                 style={{
-                  backgroundColor: "var(--red-color)",
-                  minWidth: "50%",
+                  borderRadius: 0,
+                  minWidth: 0,
+                  position: "absolute",
+                  right: "1rem",
+                  bottom: "1rem",
                 }}
-                onClick={() => {
-                  const productChose = {
-                    productId: product.ProductID,
-                    name: product.Name,
-                    image: product.image,
-                    price: product.Price,
-                    quantity,
-                    totalAmount: product.Price * quantity,
-                  };
+                disabled={newComment.trim().length === 0}
+                onClick={(e) => {
                   if (!isLoggedIn) {
                     toast.warning("Vui lòng đăng nhập!");
                     history.push({
                       pathname: "/login",
                       state: { from: location.pathname },
                     });
-                  } else if (quantity === 0) {
-                    toast.warning("Số lượng sản phẩm tối thiểu là 1");
-                  } else {
-                    dispatch({
-                      type: ActionType.ORDER,
-                      payload: productChose,
-                    });
+                    return;
                   }
+                  dispatch({
+                    type: ActionType.ADD_COMMENT,
+                    payload: {
+                      id: Math.random().toString(),
+                      idProduct: product.ProductID,
+                      userName: user.lastName + " " + user.firstName,
+                      date: FortmatDate(Date.now()),
+                      content: newComment,
+                    },
+                  });
+
+                  setNewComment("");
+                  toast.success("Bạn đã đăng bình luận thành công!");
                 }}
               >
-                Chọn mua
+                Đăng
               </Button>
-              <div className="quantity">
-                <span style={{ marginLeft: "36px" }}>Số lượng</span>
-                <div className="group-input">
-                  <Button
-                    variant="contained"
-                    style={{ borderRadius: 0, minWidth: 0 }}
-                    onClick={() => {
-                      if (quantity <= 0) {
-                        return;
-                      }
-                      setQuantity((state) => state - 1);
-                    }}
-                  >
-                    -
-                  </Button>
-                  <input
-                    type="number"
-                    className="input-quantity"
-                    value={quantity}
-                    onChange={(e) => {
-                      if (+e.target.value > 10) {
-                        toast.warning(
-                          "Số lượng sản phẩm phải nhỏ hơn hoặc bằng 10!"
-                        );
-                        setQuantity(10);
-                      } else {
-                        setQuantity(+e.target.value);
-                      }
-                    }}
-                    pattern="[1-9]*"
-                  />
-                  <Button
-                    variant="contained"
-                    style={{ borderRadius: 0, minWidth: 0 }}
-                    onClick={() => {
-                      if (quantity >= 10) {
-                        return;
-                      }
-                      setQuantity((state) => state + 1);
-                    }}
-                  >
-                    +
-                  </Button>
-                </div>
-              </div>
             </div>
-          </Description>
-        </Container>
+
+            {product.comments?.map((comment) => (
+              <div>{comment.content}</div>
+            ))}
+          </div>
+        </>
       );
   }
 

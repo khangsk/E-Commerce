@@ -5,6 +5,7 @@ import {
   UserType,
   ItemOrderType,
   OrderHistoryType,
+  CommentType,
 } from "../reducers/repositoriesReducer";
 import { ActionType } from "../action-types";
 
@@ -35,4 +36,8 @@ export type Action =
   | {
       type: ActionType.CHECKOUT;
       payload: OrderHistoryType;
+    }
+  | {
+      type: ActionType.ADD_COMMENT;
+      payload: CommentType;
     };

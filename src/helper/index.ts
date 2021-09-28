@@ -26,3 +26,11 @@ export const getAllProducts = (categories: CategoryType[]) => {
     .map((el) => result.push(...el.products));
   return result;
 };
+
+export const FortmatDate = (x: number) => {
+  const date = new Date(x);
+  const day = date.getDay();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  return `Ngày ${day}, tháng ${month}, năm ${year}`;
+};

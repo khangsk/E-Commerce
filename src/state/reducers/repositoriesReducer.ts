@@ -1,4 +1,4 @@
-import { User } from "../../firebase";
+import { User, Products } from "../../firebase";
 import { ActionType } from "../action-types";
 import { Action } from "../actions";
 
@@ -28,6 +28,14 @@ export interface CategoryType {
   Promotion: string[];
 }
 
+export interface CommentType {
+  id: string;
+  idProduct: string;
+  userName: string;
+  date: string;
+  content: string;
+}
+
 export interface ProductType {
   ProductID: string;
   CategoryID: string;
@@ -39,6 +47,7 @@ export interface ProductType {
   Producer: string;
   Source: string;
   Star: number;
+  comments: CommentType[];
 }
 
 export interface ItemOrderType {
@@ -186,6 +195,25 @@ const reducer = (
         orderHistory: [...state.orderHistory, action.payload],
         productsOrder: [],
       };
+
+    case ActionType.ADD_COMMENT:
+      const product = state.products.find(
+        (product) => product.ProductID === action.payload.idProduct
+      );
+      if (product) {
+        if (!product.comments) {
+          product.comments = [];
+        }
+        product.comments.push(action.payload);
+        Products.doc(action.payload.idProduct).update({
+          comments: product.comments,
+        });
+        return {
+          ...state,
+          products: state.products,
+        };
+      }
+      return state;
     default:
       return state;
   }
