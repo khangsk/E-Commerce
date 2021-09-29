@@ -111,6 +111,7 @@ const reducer = (
         token: action.payload[0],
         user: action.payload[1],
         productsOrder: action.payload[1].order,
+        orderHistory: action.payload[1].orderHistory,
       };
 
     case ActionType.LOGOUT:
@@ -128,6 +129,7 @@ const reducer = (
         ...state,
         user: action.payload,
         productsOrder: action.payload.order,
+        orderHistory: action.payload.orderHistory,
       };
 
     case ActionType.LOAD_PRODUCT:

@@ -166,9 +166,8 @@ const Description = styled.div`
 `;
 
 const ProductDetail: React.FC = () => {
-  const { products, isLoggedIn, categories, user } = useTypedSelector(
-    (state) => state.repositories
-  );
+  const { products, isLoggedIn, categories, user, orderHistory } =
+    useTypedSelector((state) => state.repositories);
 
   const [quantity, setQuantity] = useState(1);
   const [newComment, setNewComment] = useState("");
@@ -193,7 +192,12 @@ const ProductDetail: React.FC = () => {
 
   if (productId) {
     const product = products.find((el) => el.ProductID === productId);
-    if (product)
+    if (product) {
+      const isPurchased = orderHistory.find((el) => {
+        return !!el.order.find(
+          (order) => order.productId === product.ProductID
+        );
+      });
       content = (
         <>
           <Container>
@@ -321,7 +325,6 @@ const ProductDetail: React.FC = () => {
                     </Button>
                   </DialogActions>
                 </Dialog>
-                ;
                 {user.email !== "admin@gmail.com" && (
                   <div className="quantity">
                     <span style={{ marginLeft: "36px" }}>Số lượng</span>
@@ -403,54 +406,56 @@ const ProductDetail: React.FC = () => {
             >
               Bình luận về sản phẩm
             </p>
-            <div style={{ padding: "0 1rem", position: "relative" }}>
-              <TextField
-                id="standard-basic"
-                label="Viết bình luận của bạn"
-                variant="standard"
-                style={{
-                  width: "100%",
-                }}
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <Button
-                variant="contained"
-                style={{
-                  borderRadius: 0,
-                  minWidth: 0,
-                  position: "absolute",
-                  right: "1rem",
-                  bottom: "1rem",
-                }}
-                disabled={newComment.trim().length === 0}
-                onClick={(e) => {
-                  if (!isLoggedIn) {
-                    toast.warning("Vui lòng đăng nhập!");
-                    history.push({
-                      pathname: "/login",
-                      state: { from: location.pathname },
+            {isPurchased && (
+              <div style={{ padding: "0 1rem", position: "relative" }}>
+                <TextField
+                  id="standard-basic"
+                  label="Viết bình luận của bạn"
+                  variant="standard"
+                  style={{
+                    width: "100%",
+                  }}
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <Button
+                  variant="contained"
+                  style={{
+                    borderRadius: 0,
+                    minWidth: 0,
+                    position: "absolute",
+                    right: "1rem",
+                    bottom: "1rem",
+                  }}
+                  disabled={newComment.trim().length === 0}
+                  onClick={(e) => {
+                    if (!isLoggedIn) {
+                      toast.warning("Vui lòng đăng nhập!");
+                      history.push({
+                        pathname: "/login",
+                        state: { from: location.pathname },
+                      });
+                      return;
+                    }
+                    dispatch({
+                      type: ActionType.ADD_COMMENT,
+                      payload: {
+                        id: Math.random().toString(),
+                        idProduct: product.ProductID,
+                        userName: user.lastName + " " + user.firstName,
+                        date: FortmatDate(Date.now()),
+                        content: newComment,
+                      },
                     });
-                    return;
-                  }
-                  dispatch({
-                    type: ActionType.ADD_COMMENT,
-                    payload: {
-                      id: Math.random().toString(),
-                      idProduct: product.ProductID,
-                      userName: user.lastName + " " + user.firstName,
-                      date: FortmatDate(Date.now()),
-                      content: newComment,
-                    },
-                  });
 
-                  setNewComment("");
-                  toast.success("Bạn đã đăng bình luận thành công!");
-                }}
-              >
-                Đăng
-              </Button>
-            </div>
+                    setNewComment("");
+                    toast.success("Bạn đã đăng bình luận thành công!");
+                  }}
+                >
+                  Đăng
+                </Button>
+              </div>
+            )}
 
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
               {product.comments?.map((comment) => (
@@ -487,9 +492,22 @@ const ProductDetail: React.FC = () => {
                 </div>
               ))}
             </List>
+
+            {!product.comments && (
+              <p
+                style={{
+                  padding: "0 3rem 1.5rem",
+                  fontSize: "1rem",
+                  margin: 0,
+                }}
+              >
+                Chưa có bình luận nào về sản phẩm
+              </p>
+            )}
           </div>
         </>
       );
+    }
   }
 
   return content;

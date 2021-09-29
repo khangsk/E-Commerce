@@ -36,8 +36,8 @@ export default function SignUp() {
 
     const email = data.get("email");
     const password = data.get("password");
-    const firstName = data.get("firstName");
-    const lastName = data.get("lastName");
+    const firstName = data.get("firstName")?.toString().trim();
+    const lastName = data.get("lastName")?.toString().trim();
     const phoneNumber = data.get("phone");
 
     setIsLoadding(true);
