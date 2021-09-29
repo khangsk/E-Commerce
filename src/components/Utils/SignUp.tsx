@@ -39,6 +39,8 @@ export default function SignUp() {
     const firstName = data.get("firstName")?.toString().trim();
     const lastName = data.get("lastName")?.toString().trim();
     const phoneNumber = data.get("phone");
+    const avatar =
+      "https://firebasestorage.googleapis.com/v0/b/efootball-e37a5.appspot.com/o/avatarUser%2Fdefault.png?alt=media&token=0bbf74ad-21cf-4895-a249-634b066da797";
 
     setIsLoadding(true);
     fetch(
@@ -69,6 +71,7 @@ export default function SignUp() {
             firstName,
             lastName,
             phoneNumber,
+            avatar,
             order: [],
             orderHistory: [],
           });
@@ -85,6 +88,7 @@ export default function SignUp() {
                 firstName,
                 lastName,
                 phoneNumber,
+                avatar,
                 order: [],
               },
             ],

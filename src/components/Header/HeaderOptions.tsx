@@ -6,7 +6,6 @@ import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
-  faUser,
   faSignOutAlt,
   faFutbol,
 } from "@fortawesome/free-solid-svg-icons";
@@ -14,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
+import { Avatar } from "@mui/material";
 
 const HeaderOptions: React.FC = () => {
   const dispatch = useDispatch();
@@ -80,15 +80,15 @@ const HeaderOptions: React.FC = () => {
             user.email === "admin@gmail.com" ? "" : "separate"
           }`}
         >
-          <FontAwesomeIcon
-            icon={faUser}
-            className="list__category__icon"
-            style={{ marginRight: "8px" }}
+          <Avatar
+            alt={user.firstName}
+            src={user.avatar}
+            style={{ marginRight: "8px", width: "30px", height: "30px" }}
           />
           {user.firstName}
           <ul className="select-category__list">
             <li className="select-input__item">
-              <Link to="/my" className="select-input__link">
+              <Link to="/my/account" className="select-input__link">
                 Trang của tôi
               </Link>
             </li>

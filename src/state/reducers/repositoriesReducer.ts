@@ -8,6 +8,7 @@ export interface UserType {
   firstName: string;
   email: string;
   phoneNumber: string;
+  avatar: string;
   order: Array<ItemOrderType>;
   orderHistory: Array<OrderHistoryType>;
 }
@@ -31,6 +32,7 @@ export interface CategoryType {
 export interface CommentType {
   id: string;
   userId: string;
+  userAvatar: string;
   idProduct: string;
   userName: string;
   date: string;
@@ -92,6 +94,7 @@ const initialState = {
     firstName: "",
     lastName: "",
     email: "",
+    avatar: "",
     phoneNumber: "",
     order: [],
     orderHistory: [],
@@ -189,6 +192,16 @@ const reducer = (
         productsOrder: action.payload,
       };
 
+    case ActionType.UPDATE_USER_ACCOUNT:
+      User.doc(state.user.id).update(action.payload);
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      };
+
     case ActionType.CHECKOUT:
       User.doc(state.user.id).update({
         order: [],
@@ -218,6 +231,7 @@ const reducer = (
         };
       }
       return state;
+
     case ActionType.REMOVE_COMMENT:
       const productRemoveCmt = state.products.find(
         (product) => product.ProductID === action.payload[1]
@@ -236,6 +250,7 @@ const reducer = (
         };
       }
       return state;
+
     case ActionType.ADMIN_DELETE_PRODUCT:
       const newProducts = state.products.filter(
         (p) => p.ProductID !== action.payload
@@ -286,6 +301,7 @@ const reducer = (
         categories: [],
         menuItems: [],
       };
+
     default:
       return state;
   }

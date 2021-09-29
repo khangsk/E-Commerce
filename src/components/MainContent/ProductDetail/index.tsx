@@ -3,12 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGift, faCheck } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
 import styled from "styled-components";
-import { useTypedSelector } from "../../hooks/useTypedSelector";
+import { useTypedSelector } from "../../../hooks/useTypedSelector";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import { FormatAmount, FortmatDate } from "../../helper";
+import { FormatAmount, FortmatDate } from "../../../helper";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { ActionType } from "../../state/action-types";
+import { ActionType } from "../../../state/action-types";
 import { Helmet } from "react-helmet";
 import { TextField } from "@mui/material";
 import List from "@mui/material/List";
@@ -443,6 +443,7 @@ const ProductDetail: React.FC = () => {
                       payload: {
                         id: Math.random().toString(),
                         userId: user.id,
+                        userAvatar: user.avatar,
                         idProduct: product.ProductID,
                         userName: user.lastName + " " + user.firstName,
                         date: FortmatDate(Date.now()),
@@ -467,12 +468,7 @@ const ProductDetail: React.FC = () => {
                     style={{ position: "relative" }}
                   >
                     <ListItemAvatar>
-                      <Avatar
-                        alt={comment.userName}
-                        src={
-                          "https://scontent.fsgn5-7.fna.fbcdn.net/v/t1.6435-9/45544084_1060765530772605_3731094521610502144_n.jpg?_nc_cat=101&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=dec7mqnO6tgAX925_FK&_nc_ht=scontent.fsgn5-7.fna&oh=6d93ab6209fee8bad47f769803b4c2f9&oe=61780E52"
-                        }
-                      />
+                      <Avatar alt={comment.userName} src={comment.userAvatar} />
                     </ListItemAvatar>
                     <ListItemText
                       secondary={comment.date}

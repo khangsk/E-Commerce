@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import SignIn from "./components/Utils/SignIn";
 import SignUp from "./components/Utils/SignUp";
 import styled from "styled-components";
@@ -7,7 +7,7 @@ import Home from "./components/Home";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MainContent from "./components/MainContent";
-import ProductDetail from "./components/ProductDetail";
+import ProductDetail from "./components/MainContent/ProductDetail";
 import { useTypedSelector } from "./hooks/useTypedSelector";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,6 +25,7 @@ import {
 import Loading from "./components/Utils/Loading";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
+import MyProfile from "./components/MyProfile";
 
 const Layout = styled.div`
   width: 1200px;
@@ -158,31 +159,38 @@ function App() {
       <Layout>
         <ToastContainer autoClose={3000} />
         <Header />
-        <Route path="/" exact component={Home} />
-        <Route path="/register">
-          {!isLoggedIn && <SignUp />}
-          {isLoggedIn && location.state && (
-            <Redirect to={location.state.from} />
-          )}
-          {isLoggedIn && !location.state && <Redirect to="/" />}
-        </Route>
-        <Route path="/login">
-          {!isLoggedIn && <SignIn />}
-          {isLoggedIn && location.state && (
-            <Redirect to={location.state.from} />
-          )}
-          {isLoggedIn && !location.state && <Redirect to="/" />}
-        </Route>
-        <Route exact path="/menu-item/:menuItemID" component={MainContent} />
-        <Route exact path="/product-detail/:id" component={ProductDetail} />
-        <Route exact path="/cart">
-          {isLoggedIn && <Cart />}
-          {!isLoggedIn && <Redirect to="/login" />}
-        </Route>
-        <Route exact path="/checkout">
-          {isLoggedIn && <Checkout />}
-          {!isLoggedIn && <Redirect to="/login" />}
-        </Route>
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/register">
+            {!isLoggedIn && <SignUp />}
+            {isLoggedIn && location.state && (
+              <Redirect to={location.state.from} />
+            )}
+            {isLoggedIn && !location.state && <Redirect to="/" />}
+          </Route>
+          <Route path="/login">
+            {!isLoggedIn && <SignIn />}
+            {isLoggedIn && location.state && (
+              <Redirect to={location.state.from} />
+            )}
+            {isLoggedIn && !location.state && <Redirect to="/" />}
+          </Route>
+          <Route exact path="/menu-item/:menuItemID" component={MainContent} />
+          <Route exact path="/product-detail/:id" component={ProductDetail} />
+          <Route exact path="/cart">
+            {isLoggedIn && <Cart />}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Route exact path="/checkout">
+            {isLoggedIn && <Checkout />}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Route exact path={["/my/account", "/my/purchase"]}>
+            {isLoggedIn && <MyProfile />}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Redirect to="/" />
+        </Switch>
       </Layout>
       <Footer />
     </>

@@ -34,6 +34,15 @@ export type Action =
       payload: ItemOrderType[];
     }
   | {
+      type: ActionType.UPDATE_USER_ACCOUNT;
+      payload: {
+        lastName: string;
+        firstName: string;
+        phoneNumber: string;
+        avatar: string;
+      };
+    }
+  | {
       type: ActionType.CHECKOUT;
       payload: OrderHistoryType;
     }

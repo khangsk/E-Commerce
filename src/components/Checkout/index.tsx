@@ -6,7 +6,7 @@ import { FormatAmount } from "../../helper";
 import Button from "@mui/material/Button";
 import { useHistory } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import LocationForm from "../Location/LocationForm";
+import LocationForm from "../../helper/Location/LocationForm";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -66,8 +66,8 @@ const Checkout: React.FC = () => {
       <Helmet>
         <meta charSet="utf-8" />
         <title>Thanh toán</title>
-      </Helmet>{" "}
-      {productsOrder.length && (
+      </Helmet>
+      {productsOrder.length > 0 && (
         <div
           style={{
             padding: "0.5rem 1rem",
