@@ -198,6 +198,7 @@ const ProductDetail: React.FC = () => {
           (order) => order.productId === product.ProductID
         );
       });
+
       content = (
         <>
           <Container>
@@ -441,6 +442,7 @@ const ProductDetail: React.FC = () => {
                       type: ActionType.ADD_COMMENT,
                       payload: {
                         id: Math.random().toString(),
+                        userId: user.id,
                         idProduct: product.ProductID,
                         userName: user.lastName + " " + user.firstName,
                         date: FortmatDate(Date.now()),
@@ -459,12 +461,17 @@ const ProductDetail: React.FC = () => {
 
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
               {product.comments?.map((comment) => (
-                <div key={comment.id}>
-                  <ListItem alignItems="flex-start">
+                <div key={Math.random().toString()}>
+                  <ListItem
+                    alignItems="flex-start"
+                    style={{ position: "relative" }}
+                  >
                     <ListItemAvatar>
                       <Avatar
                         alt={comment.userName}
-                        src="/static/images/avatar/1.jpg"
+                        src={
+                          "https://scontent.fsgn5-7.fna.fbcdn.net/v/t1.6435-9/45544084_1060765530772605_3731094521610502144_n.jpg?_nc_cat=101&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=dec7mqnO6tgAX925_FK&_nc_ht=scontent.fsgn5-7.fna&oh=6d93ab6209fee8bad47f769803b4c2f9&oe=61780E52"
+                        }
                       />
                     </ListItemAvatar>
                     <ListItemText
@@ -477,12 +484,35 @@ const ProductDetail: React.FC = () => {
                             variant="body2"
                             color="text.primary"
                           >
-                            {comment.userName}
+                            {comment.userId === user.id
+                              ? "Tôi"
+                              : comment.userName}
                           </Typography>
                           {` — ${comment.content}`}
                         </>
                       }
                     />
+                    {comment.userId === user.id && (
+                      <Button
+                        variant="text"
+                        style={{
+                          borderRadius: 0,
+                          minWidth: 0,
+                          position: "absolute",
+                          right: "1rem",
+                          bottom: "1rem",
+                        }}
+                        onClick={() => {
+                          dispatch({
+                            type: ActionType.REMOVE_COMMENT,
+                            payload: [comment.id, product.ProductID],
+                          });
+                          toast.success("Xóa thành công bình luận");
+                        }}
+                      >
+                        Xóa
+                      </Button>
+                    )}
                   </ListItem>
                   <Divider
                     variant="inset"

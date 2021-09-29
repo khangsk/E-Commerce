@@ -30,6 +30,7 @@ export interface CategoryType {
 
 export interface CommentType {
   id: string;
+  userId: string;
   idProduct: string;
   userName: string;
   date: string;
@@ -200,16 +201,34 @@ const reducer = (
       };
 
     case ActionType.ADD_COMMENT:
-      const product = state.products.find(
+      const productAddCmt = state.products.find(
         (product) => product.ProductID === action.payload.idProduct
       );
-      if (product) {
-        if (!product.comments) {
-          product.comments = [];
+      if (productAddCmt) {
+        if (!productAddCmt.comments) {
+          productAddCmt.comments = [];
         }
-        product.comments.push(action.payload);
+        productAddCmt.comments.push(action.payload);
         Products.doc(action.payload.idProduct).update({
-          comments: product.comments,
+          comments: productAddCmt.comments,
+        });
+        return {
+          ...state,
+          products: state.products,
+        };
+      }
+      return state;
+    case ActionType.REMOVE_COMMENT:
+      const productRemoveCmt = state.products.find(
+        (product) => product.ProductID === action.payload[1]
+      );
+      if (productRemoveCmt) {
+        const newComments = productRemoveCmt.comments.filter(
+          (cmt) => cmt.id !== action.payload[0]
+        );
+        productRemoveCmt.comments = newComments;
+        Products.doc(action.payload[1]).update({
+          comments: newComments,
         });
         return {
           ...state,
