@@ -148,8 +148,7 @@ const MyAccount: React.FC = () => {
           disabled={
             firstNameInput.trim().length === 0 ||
             lastNameInput.trim().length === 0 ||
-            !phoneInput ||
-            !image
+            !phoneInput
           }
         >
           Lưu
