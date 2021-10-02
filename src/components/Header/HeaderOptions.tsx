@@ -92,14 +92,11 @@ const HeaderOptions: React.FC = () => {
                 Trang của tôi
               </Link>
             </li>
-            {/* <li className="select-input__item">
-              <Link
-                to="/category/quan-ao-bong-da"
-                className="select-input__link"
-              >
-                Đổi mật khẩu
+            <li className="select-input__item">
+              <Link to="/my/purchase" className="select-input__link">
+                Lịch sử mua hàng
               </Link>
-            </li> */}
+            </li>
             <li className="select-input__item">
               <button
                 onClick={() => {

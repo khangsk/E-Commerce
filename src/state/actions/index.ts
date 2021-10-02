@@ -43,6 +43,10 @@ export type Action =
       };
     }
   | {
+      type: ActionType.UPDATE_USER_ORDER;
+      payload: OrderHistoryType[];
+    }
+  | {
       type: ActionType.CHECKOUT;
       payload: OrderHistoryType;
     }

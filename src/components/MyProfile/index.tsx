@@ -11,8 +11,16 @@ import MyAccount from "./MyAccount";
 
 const MyProfile: React.FC = () => {
   const { isLoggedIn, user } = useTypedSelector((state) => state.repositories);
-  const [categoryActive, setCategoryActive] = useState("account");
   const location = useLocation();
+  const [categoryActive, setCategoryActive] = useState(
+    location.pathname.match("account") ? "account" : "purchase"
+  );
+
+  useEffect(() => {
+    setCategoryActive(
+      location.pathname.match("account") ? "account" : "purchase"
+    );
+  }, [location.pathname]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -92,7 +100,7 @@ const MyProfile: React.FC = () => {
                       setCategoryActive("purchase");
                     }}
                   >
-                    Đơn mua
+                    Lịch sử mua hàng
                   </Link>
                 </li>
               </ul>

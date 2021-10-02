@@ -27,7 +27,7 @@ export const getAllProducts = (categories: CategoryType[]) => {
   return result;
 };
 
-export const FortmatDate = (x: number) => {
+export const FormatDate = (x: number) => {
   const date = new Date(x);
   const day = date.getDate();
   const month = date.getMonth() + 1;

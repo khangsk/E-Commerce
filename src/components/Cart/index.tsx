@@ -19,7 +19,9 @@ import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
 const Cart: React.FC = () => {
-  const { productsOrder } = useTypedSelector((state) => state.repositories);
+  const productsOrder = useTypedSelector(
+    (state) => state.repositories.productsOrder
+  );
   const dispatch = useDispatch();
   const history = useHistory();
 

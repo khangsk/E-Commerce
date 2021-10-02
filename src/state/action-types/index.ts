@@ -6,7 +6,7 @@ export enum ActionType {
   ORDER = "order",
   UPDATE_ORDER = "update_order",
   UPDATE_USER_ACCOUNT = "update_user_account",
-
+  UPDATE_USER_ORDER = "update_user_order",
   CHECKOUT = "checkout",
   ADD_COMMENT = "add_comment",
   REMOVE_COMMENT = "remove_comment",

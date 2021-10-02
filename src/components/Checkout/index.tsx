@@ -226,14 +226,18 @@ const Checkout: React.FC = () => {
                       city.label,
                     order: productsOrder,
                     date: new Date(Date.now()).toString(),
+                    accept: false,
                   };
                   if (paymenMethod === "cash") {
                     const result = await Order.add(orderInfo);
                     if (result) {
                       toast.success("Đặt hàng thành công!");
+                      dispatch({
+                        type: ActionType.CHECKOUT,
+                        payload: { ...orderInfo, id: result.id },
+                      });
+                      history.replace("/");
                     }
-                    dispatch({ type: ActionType.CHECKOUT, payload: orderInfo });
-                    history.replace("/");
                   }
                 }
               }}

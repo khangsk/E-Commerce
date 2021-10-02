@@ -90,6 +90,7 @@ export default function SignUp() {
                 phoneNumber,
                 avatar,
                 order: [],
+                orderHistory: [],
               },
             ],
           });

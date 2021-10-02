@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useTypedSelector } from "../../../hooks/useTypedSelector";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import { FormatAmount, FortmatDate } from "../../../helper";
+import { FormatAmount, FormatDate } from "../../../helper";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { ActionType } from "../../../state/action-types";
@@ -193,11 +193,13 @@ const ProductDetail: React.FC = () => {
   if (productId) {
     const product = products.find((el) => el.ProductID === productId);
     if (product) {
-      const isPurchased = orderHistory.find((el) => {
-        return !!el.order.find(
-          (order) => order.productId === product.ProductID
-        );
-      });
+      const isPurchased = orderHistory
+        ? orderHistory.find((el) => {
+            return !!el.order.find(
+              (order) => order.productId === product.ProductID
+            );
+          })
+        : false;
 
       content = (
         <>
@@ -446,7 +448,7 @@ const ProductDetail: React.FC = () => {
                         userAvatar: user.avatar,
                         idProduct: product.ProductID,
                         userName: user.lastName + " " + user.firstName,
-                        date: FortmatDate(Date.now()),
+                        date: FormatDate(Date.now()),
                         content: newComment,
                       },
                     });

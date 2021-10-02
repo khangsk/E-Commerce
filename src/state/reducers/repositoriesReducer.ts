@@ -70,6 +70,8 @@ export interface OrderHistoryType {
   address: string;
   order: ItemOrderType[];
   date: string;
+  accept: boolean;
+  id: string;
 }
 
 interface RepositoriesState {
@@ -202,14 +204,32 @@ const reducer = (
         },
       };
 
+    case ActionType.UPDATE_USER_ORDER:
+      User.doc(state.user.id).update({
+        orderHistory: action.payload,
+      });
+
+      return {
+        ...state,
+        orderHistory: action.payload,
+        user: {
+          ...state.user,
+          orderHistory: action.payload,
+        },
+      };
+
     case ActionType.CHECKOUT:
       User.doc(state.user.id).update({
         order: [],
-        orderHistory: [...state.orderHistory, action.payload],
+        orderHistory: state.orderHistory
+          ? [...state.orderHistory, action.payload]
+          : [action.payload],
       });
       return {
         ...state,
-        orderHistory: [...state.orderHistory, action.payload],
+        orderHistory: state.orderHistory
+          ? [...state.orderHistory, action.payload]
+          : [action.payload],
         productsOrder: [],
       };
 
