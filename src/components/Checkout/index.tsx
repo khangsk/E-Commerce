@@ -17,8 +17,9 @@ import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 
 const Checkout: React.FC = () => {
-  const { productsOrder, user } = useTypedSelector(
-    (state) => state.repositories
+  const user = useTypedSelector((state) => state.repositories.user);
+  const productsOrder = useTypedSelector(
+    (state) => state.repositories.productsOrder
   );
   const dispatch = useDispatch();
   const history = useHistory();

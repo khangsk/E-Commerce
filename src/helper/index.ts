@@ -32,5 +32,7 @@ export const FormatDate = (x: number) => {
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
-  return `Ngày ${day}, tháng ${month}, năm ${year}`;
+  return `Ngày ${day > 9 ? day : `0${day}`}, tháng ${
+    month > 9 ? month : `0${month}`
+  }, năm ${year}`;
 };

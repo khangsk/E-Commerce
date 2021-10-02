@@ -26,6 +26,7 @@ import Loading from "./components/Utils/Loading";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import MyProfile from "./components/MyProfile";
+import Admin from "./components/Admin";
 
 const Layout = styled.div`
   width: 1200px;
@@ -60,7 +61,9 @@ const getCategoriesOfMenuItem = (categories: CategoryType[]) => {
 };
 
 function App() {
-  const { isLoggedIn, token } = useTypedSelector((state) => state.repositories);
+  const { isLoggedIn, token, user } = useTypedSelector(
+    (state) => state.repositories
+  );
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -157,7 +160,7 @@ function App() {
     <>
       {isLoading && <Loading />}
       <Layout>
-        <ToastContainer autoClose={3000} />
+        <ToastContainer autoClose={2000} />
         <Header />
         <Switch>
           <Route path="/" exact component={Home} />
@@ -185,8 +188,21 @@ function App() {
             {isLoggedIn && <Checkout />}
             {!isLoggedIn && <Redirect to="/login" />}
           </Route>
-          <Route exact path={["/my/account", "/my/purchase"]}>
+          <Route
+            exact
+            path={["/my/account", "/my/purchase", "/my/order-waiting"]}
+          >
             {isLoggedIn && <MyProfile />}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Route
+            exact
+            path={["/admin/account", "/admin/order", "/admin/product"]}
+          >
+            {isLoggedIn && user.email === "admin@gmail.com" && <Admin />}
+            {isLoggedIn && user.email !== "admin@gmail.com" && (
+              <Redirect to="/" />
+            )}
             {!isLoggedIn && <Redirect to="/login" />}
           </Route>
           <Redirect to="/" />

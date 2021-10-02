@@ -184,10 +184,6 @@ const ProductDetail: React.FC = () => {
 
   const [open, setOpen] = useState(false);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   let content = <></>;
 
   if (productId) {
@@ -298,7 +294,7 @@ const ProductDetail: React.FC = () => {
                 </Button>
                 <Dialog
                   open={open}
-                  onClose={handleClose}
+                  onClose={() => setOpen(false)}
                   aria-labelledby="alert-dialog-title"
                   aria-describedby="alert-dialog-description"
                 >
@@ -307,11 +303,11 @@ const ProductDetail: React.FC = () => {
                   </DialogTitle>
                   <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                      Bạn chắc chắn muốn xóa sản phẩm này chứ?
+                      Bạn chắc chắn muốn xóa sản phẩm này?
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose}>Hủy bỏ</Button>
+                    <Button onClick={() => setOpen(false)}>Hủy bỏ</Button>
                     <Button
                       onClick={() => {
                         setOpen(false);
@@ -409,7 +405,7 @@ const ProductDetail: React.FC = () => {
             >
               Bình luận về sản phẩm
             </p>
-            {isPurchased && (
+            {(isPurchased || user.email === "admin@gmail.com") && (
               <div style={{ padding: "0 1rem", position: "relative" }}>
                 <TextField
                   id="standard-basic"

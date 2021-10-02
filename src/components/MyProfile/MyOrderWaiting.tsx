@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormatAmount, FormatDate } from "../../helper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,19 +8,22 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { ActionType } from "../../state/action-types";
-import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useHistory } from "react-router-dom";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { useDispatch } from "react-redux";
+import Button from "@mui/material/Button";
 import { Order } from "../../firebase";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
-const MyPurchase: React.FC = () => {
+const MyOrderWaiting: React.FC = () => {
   const orderHistory = useTypedSelector((state) =>
-    state.repositories.orderHistory.filter((el) => el.accept)
+    state.repositories.orderHistory.filter((el) => !el.accept)
   );
-
+  const [open, setOpen] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -43,7 +46,7 @@ const MyPurchase: React.FC = () => {
                 <TableCell align="center">Đơn giá</TableCell>
                 <TableCell align="center">Số lượng</TableCell>
                 <TableCell align="center">Số tiền</TableCell>
-                <TableCell align="center">Xóa</TableCell>
+                <TableCell align="center">Hủy</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -85,43 +88,62 @@ const MyPurchase: React.FC = () => {
                     <TableCell align="center" style={{ minWidth: 120 }}>
                       {FormatAmount(row.totalAmount)}
                     </TableCell>
-                    <TableCell
-                      align="center"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        toast.success("Xóa thành công!");
-                        const updatedOrderHistory = el.order.filter(
-                          (x) => x.productId !== row.productId
-                        );
-                        const resultUpdatedOrderHistory = [...orderHistory];
-                        resultUpdatedOrderHistory.splice(index, 1);
-                        if (updatedOrderHistory.length) {
-                          const temp = {
-                            userId: el.userId,
-                            name: el.name,
-                            phone: el.phone,
-                            address: el.address,
-                            order: updatedOrderHistory,
-                            date: el.date,
-                            accept: el.accept,
-                            id: el.id,
-                          };
-                          resultUpdatedOrderHistory.push(temp);
-                          Order.doc(el.id).update(temp);
-                        } else {
-                          Order.doc(el.id).delete();
-                        }
-                        dispatch({
-                          type: ActionType.UPDATE_USER_ORDER,
-                          payload: resultUpdatedOrderHistory,
-                        });
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faTrashAlt}
-                        style={{ color: "var(--primary-color)" }}
-                      />
+                    <TableCell align="center" style={{ cursor: "pointer" }}>
+                      <Button variant="text" onClick={() => setOpen(true)}>
+                        Hủy
+                      </Button>
                     </TableCell>
+                    <Dialog
+                      open={open}
+                      onClose={() => setOpen(false)}
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <DialogTitle id="alert-dialog-title">
+                        {"Hủy đơn hàng?"}
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                          Bạn chắc chắn muốn hủy đơn hàng này?
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={() => setOpen(false)}>Hủy bỏ</Button>
+                        <Button
+                          onClick={() => {
+                            const updatedOrderHistory = el.order.filter(
+                              (x) => x.productId !== row.productId
+                            );
+                            const resultUpdatedOrderHistory = [...orderHistory];
+                            resultUpdatedOrderHistory.splice(index, 1);
+                            if (updatedOrderHistory.length) {
+                              const temp = {
+                                userId: el.userId,
+                                name: el.name,
+                                phone: el.phone,
+                                address: el.address,
+                                order: updatedOrderHistory,
+                                date: el.date,
+                                accept: el.accept,
+                                id: el.id,
+                              };
+                              resultUpdatedOrderHistory.push(temp);
+                              Order.doc(el.id).update(temp);
+                            } else {
+                              Order.doc(el.id).delete();
+                            }
+                            dispatch({
+                              type: ActionType.UPDATE_USER_ORDER,
+                              payload: resultUpdatedOrderHistory,
+                            });
+                            setOpen(false);
+                          }}
+                          autoFocus
+                        >
+                          Đồng ý
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </TableRow>
                 ))
               )}
@@ -131,13 +153,13 @@ const MyPurchase: React.FC = () => {
       ) : (
         <div style={{ textAlign: "center", margin: "9rem", width: "100%" }}>
           <p style={{ color: "var(--red-color)", fontSize: "2rem" }}>
-            Lịch sử trống
+            Đơn hàng chờ xác nhận trống
           </p>
-          <span>Bạn chưa mua bất kỳ đơn hàng nào</span>
+          <span>Bạn không có đơn hàng nào đang chờ xác nhận</span>
         </div>
       )}
     </div>
   );
 };
 
-export default MyPurchase;
+export default MyOrderWaiting;

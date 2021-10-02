@@ -16,7 +16,7 @@ const Input = styled("input")({
 });
 
 const MyAccount: React.FC = () => {
-  const { user } = useTypedSelector((state) => state.repositories);
+  const user = useTypedSelector((state) => state.repositories.user);
   const [lastNameInput, setLastNameInput] = useState(user.lastName);
   const [firstNameInput, setFirstNameInput] = useState(user.firstName);
   const [phoneInput, setphoneInput] = useState(user.phoneNumber);

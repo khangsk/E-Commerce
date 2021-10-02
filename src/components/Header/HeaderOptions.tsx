@@ -87,16 +87,43 @@ const HeaderOptions: React.FC = () => {
           />
           {user.firstName}
           <ul className="select-category__list">
-            <li className="select-input__item">
-              <Link to="/my/account" className="select-input__link">
-                Trang của tôi
-              </Link>
-            </li>
-            <li className="select-input__item">
-              <Link to="/my/purchase" className="select-input__link">
-                Lịch sử mua hàng
-              </Link>
-            </li>
+            {user.email === "admin@gmail.com" ? (
+              <>
+                <li className="select-input__item">
+                  <Link to="/admin/account" className="select-input__link">
+                    Quản lý tài khoản
+                  </Link>
+                </li>
+                <li className="select-input__item">
+                  <Link to="/admin/order" className="select-input__link">
+                    Quản lý đơn hàng
+                  </Link>
+                </li>
+                <li className="select-input__item">
+                  <Link to="/admin/product" className="select-input__link">
+                    Quản lý sản phẩm
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="select-input__item">
+                  <Link to="/my/account" className="select-input__link">
+                    Trang của tôi
+                  </Link>
+                </li>
+                <li className="select-input__item">
+                  <Link to="/my/order-waiting" className="select-input__link">
+                    Chờ xác nhận
+                  </Link>
+                </li>
+                <li className="select-input__item">
+                  <Link to="/my/purchase" className="select-input__link">
+                    Lịch sử mua hàng
+                  </Link>
+                </li>
+              </>
+            )}
             <li className="select-input__item">
               <button
                 onClick={() => {

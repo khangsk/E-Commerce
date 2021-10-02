@@ -1,0 +1,15 @@
+.filter {
+  display: flex;
+  align-items: center;
+  padding: 12px 22px;
+  border-radius: 2px;
+  background-color: #ededed;
+  color: #555555;
+  font-size: 0.875rem;
+  width: 100%;
+}
+
+.filter__btn {
+  margin-left: 36px;
+  min-width: 90px;
+}

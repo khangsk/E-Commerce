@@ -12,7 +12,7 @@ import { ProductType } from "../../state/reducers/repositoriesReducer";
 import { Helmet } from "react-helmet";
 
 const MainContent: React.FC = () => {
-  const { menuItems } = useTypedSelector((state) => state.repositories);
+  const menuItems = useTypedSelector((state) => state.repositories.menuItems);
   const [categoryChoice, setCategoryChoice] = useState("");
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState("new");
