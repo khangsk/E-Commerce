@@ -32,7 +32,7 @@ const MyProfile: React.FC = () => {
         <meta charSet="utf-8" />
         <title>Trang của tôi</title>
       </Helmet>
-      <div className="app__container">
+      <div className="app__container" style={{ minHeight: "79vh" }}>
         <div className="grid">
           <div className="grid__row app-content">
             <nav className="grid__column-2 category">

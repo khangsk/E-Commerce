@@ -463,65 +463,73 @@ const ProductDetail: React.FC = () => {
             )}
 
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-              {product.comments?.map((comment) => (
-                <div key={Math.random().toString()}>
-                  <ListItem
-                    alignItems="flex-start"
-                    style={{ position: "relative" }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar alt={comment.userName} src={comment.userAvatar} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      secondary={comment.date}
-                      primary={
-                        <>
-                          <Typography
-                            sx={{ display: "inline" }}
-                            component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
-                            {comment.userId === user.id
-                              ? "Tôi"
-                              : comment.userName}
-                          </Typography>
-                          {` — ${comment.content}`}
-                        </>
-                      }
+              {product.comments
+                ?.sort((a, b) =>
+                  a.date > b.date ? 1 : a.date < b.date ? -1 : 0
+                )
+                .map((comment) => (
+                  <div key={Math.random().toString()}>
+                    <ListItem
+                      alignItems="flex-start"
+                      style={{ position: "relative" }}
+                    >
+                      <ListItemAvatar>
+                        <Avatar
+                          alt={comment.userName}
+                          src={comment.userAvatar}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        secondary={comment.date}
+                        primary={
+                          <>
+                            <Typography
+                              sx={{ display: "inline" }}
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              {comment.userId === user.id
+                                ? "Tôi"
+                                : comment.userName}
+                            </Typography>
+                            {` — ${comment.content}`}
+                          </>
+                        }
+                      />
+                      {(comment.userId === user.id ||
+                        user.email === "admin@gmail.com") && (
+                        <Button
+                          variant="text"
+                          style={{
+                            borderRadius: 0,
+                            minWidth: 0,
+                            position: "absolute",
+                            right: "1rem",
+                            bottom: "1rem",
+                          }}
+                          onClick={() => {
+                            dispatch({
+                              type: ActionType.REMOVE_COMMENT,
+                              payload: [comment.id, product.ProductID],
+                            });
+                            toast.success("Xóa thành công bình luận");
+                          }}
+                        >
+                          Xóa
+                        </Button>
+                      )}
+                    </ListItem>
+                    <Divider
+                      variant="inset"
+                      component="li"
+                      style={{ margin: "8px 0" }}
                     />
-                    {comment.userId === user.id && (
-                      <Button
-                        variant="text"
-                        style={{
-                          borderRadius: 0,
-                          minWidth: 0,
-                          position: "absolute",
-                          right: "1rem",
-                          bottom: "1rem",
-                        }}
-                        onClick={() => {
-                          dispatch({
-                            type: ActionType.REMOVE_COMMENT,
-                            payload: [comment.id, product.ProductID],
-                          });
-                          toast.success("Xóa thành công bình luận");
-                        }}
-                      >
-                        Xóa
-                      </Button>
-                    )}
-                  </ListItem>
-                  <Divider
-                    variant="inset"
-                    component="li"
-                    style={{ margin: "8px 0" }}
-                  />
-                </div>
-              ))}
+                  </div>
+                ))}
             </List>
 
-            {!product.comments && (
+            {(!product.comments || product.comments.length === 0) && (
               <p
                 style={{
                   padding: "0 3rem 1.5rem",
