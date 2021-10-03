@@ -54,6 +54,10 @@ const MainContent: React.FC = () => {
     productsChoice.sort((a: ProductType, b: ProductType) =>
       a.Price > b.Price ? -1 : b.Price > a.Price ? 1 : 0
     );
+  } else if (filter === "new") {
+    productsChoice.sort((a: ProductType, b: ProductType) =>
+      a.ProductID > b.ProductID ? -1 : b.ProductID > a.ProductID ? 1 : 0
+    );
   }
 
   const sizeProducts = productsChoice.length;

@@ -90,8 +90,7 @@ body {
 
 .select-input__list {
   position: absolute;
-  left: -46px;
-  right: 0;
+  right: -32px;
   top: 22px;
   border-radius: 2px;
   background-color: var(--white-color);

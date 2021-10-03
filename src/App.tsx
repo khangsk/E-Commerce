@@ -75,7 +75,7 @@ function App() {
       let products: ProductType[] = [];
       let categories: CategoryType[] = [];
       let menuItems: MenuItemType[] = [];
-
+      debugger;
       const snapshotProducts = await Products.get();
       snapshotProducts.forEach((doc) => {
         if (!doc.data().isDeleted)

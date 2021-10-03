@@ -338,3 +338,41 @@
   background-color: var(--primary-color) !important;
   color: var(--white-color) !important;
 }
+
+.select-input__list-price {
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 22px;
+  border-radius: 2px;
+  background-color: var(--white-color);
+  list-style: none;
+  padding: 8px 16px;
+  display: none;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  z-index: 100000000;
+  min-width: 160px;
+}
+
+.select-input__list-price::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+.select-input__list-price::after {
+  content: "";
+  border-width: 10px 14px;
+  border-style: solid;
+  border-color: transparent transparent var(--white-color) transparent;
+  position: absolute;
+  top: -18px;
+  right: 2px;
+}
+
+.select-input:hover .select-input__list-price {
+  display: block;
+}

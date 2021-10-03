@@ -51,7 +51,7 @@ const HomeFilter: React.FC<{
           }`}
         />
 
-        <ul className="select-input__list">
+        <ul className="select-input__list-price">
           <li className="select-input__item">
             <Link
               to="#"

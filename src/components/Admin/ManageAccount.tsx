@@ -17,6 +17,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import Loading from "../Utils/Loading";
+import Avatar from "@mui/material/Avatar";
 
 const ManageAccount: React.FC = () => {
   const [listUsers, setListUsers] = useState<Array<any>>();
@@ -109,11 +110,10 @@ const ManageAccount: React.FC = () => {
                         height: 50,
                       }}
                     >
-                      <img
+                      <Avatar
+                        alt={user.firstName}
                         src={user.avatar}
-                        alt=""
-                        width="50"
-                        style={{ marginRight: "16px" }}
+                        style={{ margin: "16px" }}
                       />
                       {user.lastName + " " + user.firstName}
                     </div>

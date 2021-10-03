@@ -67,7 +67,10 @@ const ListOrderDetail: React.FC<{
         </DialogActions>
       </Dialog>
       <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
-        <Table sx={{ width: 2100 }} aria-label="simple table">
+        <Table
+          sx={{ width: validated ? 1980 : 2100 }}
+          aria-label="simple table"
+        >
           <TableHead>
             <TableRow>
               <TableCell align="center" style={{ paddingLeft: 10, width: 50 }}>

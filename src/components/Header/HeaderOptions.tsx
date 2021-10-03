@@ -22,7 +22,7 @@ const HeaderOptions: React.FC = () => {
   const { isLoggedIn, user, productsOrder } = useTypedSelector(
     (state) => state.repositories
   );
-  const { menuItems } = useTypedSelector((state) => state.repositories);
+  const menuItems = useTypedSelector((state) => state.repositories.menuItems);
 
   const btnClasses = `button link ${btnIsHighlighted ? "bump" : ""}`;
 
