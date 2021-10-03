@@ -191,8 +191,9 @@ const ProductDetail: React.FC = () => {
     if (product) {
       const isPurchased = orderHistory
         ? orderHistory.find((el) => {
-            return !!el.order.find(
-              (order) => order.productId === product.ProductID
+            return (
+              el.accept &&
+              !!el.order.find((order) => order.productId === product.ProductID)
             );
           })
         : false;
@@ -267,9 +268,10 @@ const ProductDetail: React.FC = () => {
                         productId: product.ProductID,
                         name: product.Name,
                         image: product.image,
-                        price: product.Price,
+                        price: product.Price * (1 - product.Discount),
                         quantity,
-                        totalAmount: product.Price * quantity,
+                        totalAmount:
+                          product.Price * (1 - product.Discount) * quantity,
                       };
                       if (!isLoggedIn) {
                         toast.warning("Vui lòng đăng nhập!");
@@ -459,70 +461,63 @@ const ProductDetail: React.FC = () => {
             )}
 
             <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-              {product.comments
-                ?.sort((a, b) =>
-                  a.date > b.date ? 1 : a.date < b.date ? -1 : 0
-                )
-                .map((comment) => (
-                  <div key={Math.random().toString()}>
-                    <ListItem
-                      alignItems="flex-start"
-                      style={{ position: "relative" }}
-                    >
-                      <ListItemAvatar>
-                        <Avatar
-                          alt={comment.userName}
-                          src={comment.userAvatar}
-                        />
-                      </ListItemAvatar>
-                      <ListItemText
-                        secondary={comment.date}
-                        primary={
-                          <>
-                            <Typography
-                              sx={{ display: "inline" }}
-                              component="span"
-                              variant="body2"
-                              color="text.primary"
-                            >
-                              {comment.userId === user.id
-                                ? "Tôi"
-                                : comment.userName}
-                            </Typography>
-                            {` — ${comment.content}`}
-                          </>
-                        }
-                      />
-                      {(comment.userId === user.id ||
-                        user.email === "admin@gmail.com") && (
-                        <Button
-                          variant="text"
-                          style={{
-                            borderRadius: 0,
-                            minWidth: 0,
-                            position: "absolute",
-                            right: "1rem",
-                            bottom: "1rem",
-                          }}
-                          onClick={() => {
-                            dispatch({
-                              type: ActionType.REMOVE_COMMENT,
-                              payload: [comment.id, product.ProductID],
-                            });
-                            toast.success("Xóa thành công bình luận");
-                          }}
-                        >
-                          Xóa
-                        </Button>
-                      )}
-                    </ListItem>
-                    <Divider
-                      variant="inset"
-                      component="li"
-                      style={{ margin: "8px 0" }}
+              {[...product.comments].reverse().map((comment) => (
+                <div key={Math.random().toString()}>
+                  <ListItem
+                    alignItems="flex-start"
+                    style={{ position: "relative" }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar alt={comment.userName} src={comment.userAvatar} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      secondary={comment.date}
+                      primary={
+                        <>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            {comment.userId === user.id
+                              ? "Tôi"
+                              : comment.userName}
+                          </Typography>
+                          {` — ${comment.content}`}
+                        </>
+                      }
                     />
-                  </div>
-                ))}
+                    {(comment.userId === user.id ||
+                      user.email === "admin@gmail.com") && (
+                      <Button
+                        variant="text"
+                        style={{
+                          borderRadius: 0,
+                          minWidth: 0,
+                          position: "absolute",
+                          right: "1rem",
+                          bottom: "1rem",
+                        }}
+                        onClick={() => {
+                          dispatch({
+                            type: ActionType.REMOVE_COMMENT,
+                            payload: [comment.id, product.ProductID],
+                          });
+                          toast.success("Xóa thành công bình luận");
+                        }}
+                      >
+                        Xóa
+                      </Button>
+                    )}
+                  </ListItem>
+                  <Divider
+                    variant="inset"
+                    component="li"
+                    style={{ margin: "8px 0" }}
+                  />
+                </div>
+              ))}
             </List>
 
             {(!product.comments || product.comments.length === 0) && (

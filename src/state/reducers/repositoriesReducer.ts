@@ -294,14 +294,14 @@ const reducer = (
 
       if (newCategory) {
         const newMenuItem = state.menuItems.find((el) => {
-          const newCat = el.categories.filter(
-            (cat) => cat.categoryId !== newCategory.categoryId
+          const newCat = el.categories.find(
+            (cat) => cat.categoryId === newCategory.categoryId
           );
-          if (newCat.length === el.categories.length) {
-            return false;
-          } else {
-            el.categories = newCat;
+          if (newCat) {
+            newCat.products = newCategory.products;
             return true;
+          } else {
+            return false;
           }
         });
 

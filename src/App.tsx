@@ -75,7 +75,6 @@ function App() {
       let products: ProductType[] = [];
       let categories: CategoryType[] = [];
       let menuItems: MenuItemType[] = [];
-      debugger;
       const snapshotProducts = await Products.get();
       snapshotProducts.forEach((doc) => {
         if (!doc.data().isDeleted)
@@ -84,7 +83,7 @@ function App() {
             CategoryID: doc.data().CategoryID,
             Name: doc.data().Name,
             Price: doc.data().Price,
-            Discount: doc.data().Sale,
+            Discount: doc.data().Discount,
             Description: doc.data().Description,
             image: doc.data().Image,
             Producer: doc.data().Producer,

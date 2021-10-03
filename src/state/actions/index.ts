@@ -61,8 +61,4 @@ export type Action =
   | {
       type: ActionType.ADMIN_DELETE_PRODUCT;
       payload: string;
-    }
-  | {
-      type: ActionType.ADD_PRODUCT;
-      payload: [ProductType, string];
     };

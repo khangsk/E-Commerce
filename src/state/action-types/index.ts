@@ -11,5 +11,4 @@ export enum ActionType {
   ADD_COMMENT = "add_comment",
   REMOVE_COMMENT = "remove_comment",
   ADMIN_DELETE_PRODUCT = "admin_elete_product",
-  ADD_PRODUCT = "add_product",
 }

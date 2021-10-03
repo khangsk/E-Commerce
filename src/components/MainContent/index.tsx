@@ -56,8 +56,20 @@ const MainContent: React.FC = () => {
     );
   } else if (filter === "new") {
     productsChoice.sort((a: ProductType, b: ProductType) =>
-      a.ProductID > b.ProductID ? -1 : b.ProductID > a.ProductID ? 1 : 0
+      +a.ProductID > +b.ProductID ? -1 : +b.ProductID > +a.ProductID ? 1 : 0
     );
+  } else {
+    if (menuItem) {
+      productsChoice = getAllProducts(menuItem.categories);
+    }
+
+    if (categoryChoice) {
+      const category = menuItem?.categories.find(
+        (el) => el.categoryId === categoryChoice
+      );
+
+      if (category && category.products) productsChoice = category?.products;
+    }
   }
 
   const sizeProducts = productsChoice.length;
