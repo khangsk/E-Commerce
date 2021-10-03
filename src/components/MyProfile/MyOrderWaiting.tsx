@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { FormatAmount, FormatDate } from "../../helper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,21 +18,55 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { toast } from "react-toastify";
 
 const MyOrderWaiting: React.FC = () => {
   const orderHistory = useTypedSelector((state) =>
     state.repositories.orderHistory.filter((el) => !el.accept)
   );
   const [open, setOpen] = useState(false);
+  const [idSelected, setIdSelected] = useState("");
   const history = useHistory();
   const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
   return (
-    <div>
+    <>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Hủy đơn hàng?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Bạn chắc chắn muốn hủy đơn hàng này?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Hủy bỏ</Button>
+          <Button
+            onClick={() => {
+              const updatedOrderHistory = orderHistory.filter(
+                (ord) => ord.id !== idSelected
+              );
+              Order.doc(idSelected).delete();
+              dispatch({
+                type: ActionType.UPDATE_USER_ORDER,
+                payload: updatedOrderHistory,
+              });
+              toast.success("Hủy đơn hàng thành công!");
+              setOpen(false);
+            }}
+            autoFocus
+          >
+            Đồng ý
+          </Button>
+        </DialogActions>
+      </Dialog>
       {orderHistory && orderHistory.length > 0 ? (
         <TableContainer component={Paper}>
           <Table
@@ -41,25 +75,41 @@ const MyOrderWaiting: React.FC = () => {
           >
             <TableHead>
               <TableRow>
-                <TableCell>Ngày</TableCell>
-                <TableCell>Sản phẩm</TableCell>
-                <TableCell align="center">Đơn giá</TableCell>
-                <TableCell align="center">Số lượng</TableCell>
-                <TableCell align="center">Số tiền</TableCell>
-                <TableCell align="center">Hủy</TableCell>
+                <TableCell align="center">Ngày</TableCell>
+                <TableCell
+                  align="center"
+                  style={{ width: 450, paddingRight: 100 }}
+                >
+                  Sản phẩm
+                </TableCell>
+                <TableCell align="center" style={{ width: 180 }}>
+                  Đơn giá
+                </TableCell>
+                <TableCell align="center" style={{ width: 120 }}>
+                  Số lượng
+                </TableCell>
+                <TableCell align="center" style={{ width: 180 }}>
+                  Số tiền
+                </TableCell>
+                <TableCell align="center" style={{ width: 60 }}>
+                  Hủy
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {orderHistory.map((el, index) =>
-                el.order.map((row) => (
+              {orderHistory.map((el, index) => (
+                <Fragment key={index}>
                   <TableRow
-                    key={row.productId}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell align="left" style={{ minWidth: 120 }}>
+                    <TableCell
+                      align="center"
+                      rowSpan={el.order.length}
+                      style={{ width: 180 }}
+                    >
                       {FormatDate(+new Date(el.date))}
                     </TableCell>
-                    <TableCell component="th" scope="row">
+                    <TableCell align="center" style={{ width: 450 }}>
                       <div
                         style={{
                           display: "flex",
@@ -67,86 +117,80 @@ const MyOrderWaiting: React.FC = () => {
                           cursor: "pointer",
                         }}
                         onClick={() =>
-                          history.push(`/product-detail/${row.productId}`)
+                          history.push(
+                            `/product-detail/${el.order[0].productId}`
+                          )
                         }
                       >
                         <img
-                          src={row.image}
+                          src={el.order[0].image}
                           alt=""
                           width="50"
                           style={{ marginRight: "16px" }}
                         />
-                        {row.name}
+                        {el.order[0].name}
                       </div>
                     </TableCell>
-                    <TableCell align="center" style={{ minWidth: 120 }}>
-                      {FormatAmount(row.price)}
+                    <TableCell align="center" style={{ width: 180 }}>
+                      {FormatAmount(el.order[0].price)}
                     </TableCell>
-                    <TableCell align="center" style={{ minWidth: 120 }}>
-                      <div className="group-input">{row.quantity}</div>
+                    <TableCell align="center" style={{ width: 120 }}>
+                      <div className="group-input">{el.order[0].quantity}</div>
                     </TableCell>
-                    <TableCell align="center" style={{ minWidth: 120 }}>
-                      {FormatAmount(row.totalAmount)}
+                    <TableCell align="center" style={{ width: 180 }}>
+                      {FormatAmount(el.order[0].totalAmount)}
                     </TableCell>
-                    <TableCell align="center" style={{ cursor: "pointer" }}>
-                      <Button variant="text" onClick={() => setOpen(true)}>
+                    <TableCell
+                      align="center"
+                      rowSpan={el.order.length}
+                      style={{ cursor: "pointer", width: 60 }}
+                    >
+                      <Button
+                        variant="text"
+                        onClick={() => {
+                          setOpen(true);
+                          setIdSelected(el.id);
+                        }}
+                      >
                         Hủy
                       </Button>
                     </TableCell>
-                    <Dialog
-                      open={open}
-                      onClose={() => setOpen(false)}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Hủy đơn hàng?"}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          Bạn chắc chắn muốn hủy đơn hàng này?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={() => setOpen(false)}>Hủy bỏ</Button>
-                        <Button
-                          onClick={() => {
-                            const updatedOrderHistory = el.order.filter(
-                              (x) => x.productId !== row.productId
-                            );
-                            const resultUpdatedOrderHistory = [...orderHistory];
-                            resultUpdatedOrderHistory.splice(index, 1);
-                            if (updatedOrderHistory.length) {
-                              const temp = {
-                                userId: el.userId,
-                                name: el.name,
-                                phone: el.phone,
-                                address: el.address,
-                                order: updatedOrderHistory,
-                                date: el.date,
-                                accept: el.accept,
-                                id: el.id,
-                              };
-                              resultUpdatedOrderHistory.push(temp);
-                              Order.doc(el.id).update(temp);
-                            } else {
-                              Order.doc(el.id).delete();
-                            }
-                            dispatch({
-                              type: ActionType.UPDATE_USER_ORDER,
-                              payload: resultUpdatedOrderHistory,
-                            });
-                            setOpen(false);
-                          }}
-                          autoFocus
-                        >
-                          Đồng ý
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
                   </TableRow>
-                ))
-              )}
+                  {el.order.slice(1).map((row) => (
+                    <TableRow key={row.productId}>
+                      <TableCell align="center" style={{ width: 450 }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                          }}
+                          onClick={() =>
+                            history.push(`/product-detail/${row.productId}`)
+                          }
+                        >
+                          <img
+                            src={row.image}
+                            alt=""
+                            width="50"
+                            style={{ marginRight: "16px" }}
+                          />
+                          {row.name}
+                        </div>
+                      </TableCell>
+                      <TableCell align="center" style={{ width: 180 }}>
+                        {FormatAmount(row.price)}
+                      </TableCell>
+                      <TableCell align="center" style={{ width: 120 }}>
+                        <div className="group-input">{row.quantity}</div>
+                      </TableCell>
+                      <TableCell align="center" style={{ width: 180 }}>
+                        {FormatAmount(row.totalAmount)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </Fragment>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -158,7 +202,7 @@ const MyOrderWaiting: React.FC = () => {
           <span>Bạn không có đơn hàng nào đang chờ xác nhận</span>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

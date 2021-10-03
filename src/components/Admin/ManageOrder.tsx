@@ -1,24 +1,7 @@
 import { useEffect, useState } from "react";
-import { FormatAmount, FormatDate } from "../../helper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { toast } from "react-toastify";
 import { Order } from "../../firebase";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
 import Loading from "../Utils/Loading";
 import ListOrderDetail from "./ListOrderDetail";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
 import "./index.css";
 
 const ManageOrder: React.FC = () => {
@@ -30,25 +13,23 @@ const ManageOrder: React.FC = () => {
 
   const [open, setOpen] = useState(false);
 
+  const setOpenChangeHandler = (e: boolean) => {
+    setOpen(e);
+  };
+
   useEffect(() => {
     setLoading(true);
     (async () => {
       const ordersValidated: Array<any> = [];
       const ordersValidatedNotYet: Array<any> = [];
       const snapshot = await Order.get();
-      snapshot.docs.forEach((doc) =>
-        doc.data().order.forEach((el: any) => {
-          if (doc.data().accept) {
-            ordersValidated.push({ id: doc.id, ...doc.data(), order: el });
-          } else {
-            ordersValidatedNotYet.push({
-              id: doc.id,
-              ...doc.data(),
-              order: el,
-            });
-          }
-        })
-      );
+      snapshot.docs.forEach((doc) => {
+        if (doc.data().accept) {
+          ordersValidated.push({ id: doc.id, ...doc.data() });
+        } else {
+          ordersValidatedNotYet.push({ id: doc.id, ...doc.data() });
+        }
+      });
       setListOrdersValidated(ordersValidated);
       setListOrdersValidateNotYet(ordersValidatedNotYet);
       setLoading(false);
@@ -79,7 +60,12 @@ const ManageOrder: React.FC = () => {
       </div>
       <div style={{ width: "100%" }}>
         {validated && listOrdersValidated && listOrdersValidated.length > 0 && (
-          <ListOrderDetail listOrders={listOrdersValidated} />
+          <ListOrderDetail
+            validated={validated}
+            open={open}
+            setOpenChangeHandler={setOpenChangeHandler}
+            listOrders={listOrdersValidated}
+          />
         )}
         {validated && listOrdersValidated?.length === 0 && (
           <div style={{ textAlign: "center", margin: "10rem" }}>
@@ -92,7 +78,12 @@ const ManageOrder: React.FC = () => {
         {!validated &&
           listOrdersValidateNotYet &&
           listOrdersValidateNotYet.length > 0 && (
-            <ListOrderDetail listOrders={listOrdersValidateNotYet} />
+            <ListOrderDetail
+              validated={validated}
+              open={open}
+              setOpenChangeHandler={setOpenChangeHandler}
+              listOrders={listOrdersValidateNotYet}
+            />
           )}
         {!validated && listOrdersValidateNotYet?.length === 0 && (
           <div style={{ textAlign: "center", margin: "10rem" }}>

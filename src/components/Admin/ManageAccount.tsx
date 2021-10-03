@@ -102,7 +102,13 @@ const ManageAccount: React.FC = () => {
                       borderLeft: "1px solid #ccc",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        height: 50,
+                      }}
+                    >
                       <img
                         src={user.avatar}
                         alt=""
