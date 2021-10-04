@@ -27,6 +27,7 @@ import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import MyProfile from "./components/MyProfile";
 import Admin from "./components/Admin";
+import EditProduct from "./components/Admin/EditProduct";
 
 const Layout = styled.div`
   width: 1200px;
@@ -199,6 +200,13 @@ function App() {
             path={["/admin/account", "/admin/order", "/admin/product"]}
           >
             {isLoggedIn && user.email === "admin@gmail.com" && <Admin />}
+            {isLoggedIn && user.email !== "admin@gmail.com" && (
+              <Redirect to="/" />
+            )}
+            {!isLoggedIn && <Redirect to="/login" />}
+          </Route>
+          <Route exact path="/product-detail/:id/edit">
+            {isLoggedIn && user.email === "admin@gmail.com" && <EditProduct />}
             {isLoggedIn && user.email !== "admin@gmail.com" && (
               <Redirect to="/" />
             )}

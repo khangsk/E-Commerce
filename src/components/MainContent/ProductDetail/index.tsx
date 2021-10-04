@@ -184,7 +184,9 @@ const ProductDetail: React.FC = () => {
 
   const [open, setOpen] = useState(false);
 
-  let content = <></>;
+  let content = (
+    <div style={{ padding: 64, fontSize: "2rem" }}>Sản phẩm không tồn tại</div>
+  );
 
   if (productId) {
     const product = products.find((el) => el.ProductID === productId);
@@ -254,11 +256,25 @@ const ProductDetail: React.FC = () => {
               </ul>
 
               <div className="purchase">
+                {user.email === "admin@gmail.com" && (
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: "var(--primary-color)",
+                      minWidth: "40%",
+                    }}
+                    onClick={() => {
+                      history.push(`/product-detail/${product.ProductID}/edit`);
+                    }}
+                  >
+                    Chỉnh sửa
+                  </Button>
+                )}
                 <Button
                   variant="contained"
                   style={{
                     backgroundColor: "var(--red-color)",
-                    minWidth: "50%",
+                    minWidth: "40%",
                   }}
                   onClick={() => {
                     if (user.email === "admin@gmail.com") {
@@ -387,14 +403,28 @@ const ProductDetail: React.FC = () => {
             >
               Mô tả sản phẩm
             </p>
-            <p
+            <p style={{ padding: "0 3rem" }}>
+              Nhà sản xuất:{" "}
+              <span style={{ fontWeight: "bold", marginLeft: 8 }}>
+                {product.Producer}
+              </span>
+            </p>
+            <p style={{ padding: "0 3rem" }}>
+              Quốc gia:{" "}
+              <span style={{ fontWeight: "bold", marginLeft: 36 }}>
+                {product.Source}
+              </span>
+            </p>
+            <div
               style={{
-                padding: "1.5rem 3rem",
+                padding: "0 3rem 1.6rem",
                 fontSize: "1rem",
+                display: "flex",
               }}
             >
-              {product.Description}
-            </p>
+              <div style={{ width: 100, marginRight: 32 }}>Mô tả: </div>
+              <span>{product.Description}</span>
+            </div>
           </div>
           <div style={{ backgroundColor: "var(--white-color)" }}>
             <p
