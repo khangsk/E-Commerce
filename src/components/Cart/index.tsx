@@ -22,6 +22,7 @@ const Cart: React.FC = () => {
   const productsOrder = useTypedSelector(
     (state) => state.repositories.productsOrder
   );
+  const products = useTypedSelector((state) => state.repositories.products);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -123,13 +124,9 @@ const Cart: React.FC = () => {
                             );
                             if (itemChange) {
                               if (itemChange.quantity === 1) {
-                                dispatch({
-                                  type: ActionType.UPDATE_ORDER,
-                                  payload: productsOrder.filter(
-                                    (product) =>
-                                      product.productId !== row.productId
-                                  ),
-                                });
+                                toast.warning(
+                                  "Số lượng sản phẩm tối thiểu là 1"
+                                );
                               } else {
                                 itemChange.quantity--;
                                 itemChange.totalAmount -= itemChange.price;
@@ -149,16 +146,20 @@ const Cart: React.FC = () => {
                           value={row.quantity}
                           pattern="[1-9]*"
                           onChange={(e) => {
+                            const product = products.find(
+                              (el) => el.ProductID === row.productId
+                            )!;
                             const itemChange = productsOrder.find(
                               (product) => product.productId === row.productId
                             );
                             if (itemChange) {
-                              if (+e.target.value > 10) {
+                              if (+e.target.value > product.quantityRemaining) {
                                 toast.warning(
-                                  "Số lượng sản phẩm phải nhỏ hơn hoặc bằng 10!"
+                                  `Số lượng sản phẩm trong kho là ${product.quantityRemaining}`
                                 );
-                                itemChange.quantity = 10;
-                                itemChange.totalAmount = itemChange.price * 10;
+                                itemChange.quantity = product.quantityRemaining;
+                                itemChange.totalAmount =
+                                  itemChange.price * product.quantityRemaining;
                               } else if (+e.target.value === 0) {
                                 toast.warning(
                                   "Số lượng sản phẩm tối thiểu là 1"
@@ -191,10 +192,16 @@ const Cart: React.FC = () => {
                             const itemChange = productsOrder.find(
                               (product) => product.productId === row.productId
                             );
+                            const product = products.find(
+                              (el) => el.ProductID === row.productId
+                            )!;
                             if (itemChange) {
-                              if (itemChange.quantity === 10) {
+                              if (
+                                itemChange.quantity ===
+                                product.quantityRemaining
+                              ) {
                                 toast.warning(
-                                  "Số lượng tối đa trên mỗi sản phẩm là 10"
+                                  `Số lượng sản phẩm trong kho là ${product.quantityRemaining}`
                                 );
                               } else {
                                 itemChange.quantity++;

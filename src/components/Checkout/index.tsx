@@ -4,7 +4,7 @@ import { useTypedSelector } from "../../hooks/useTypedSelector";
 import "./index.css";
 import { FormatAmount } from "../../helper";
 import Button from "@mui/material/Button";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import LocationForm from "../../helper/Location/LocationForm";
 import Radio from "@mui/material/Radio";
@@ -68,7 +68,7 @@ const Checkout: React.FC = () => {
         <meta charSet="utf-8" />
         <title>Thanh toán</title>
       </Helmet>
-      {productsOrder.length > 0 && (
+      {productsOrder.length > 0 ? (
         <div
           style={{
             padding: "0.5rem 1rem",
@@ -247,6 +247,8 @@ const Checkout: React.FC = () => {
             </Button>
           </div>
         </div>
+      ) : (
+        <Redirect to="/cart" />
       )}
     </>
   );

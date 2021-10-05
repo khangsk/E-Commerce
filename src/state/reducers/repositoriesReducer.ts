@@ -52,6 +52,8 @@ export interface ProductType {
   Star: number;
   comments: CommentType[];
   isDeleted: boolean;
+  quantityRemaining: number;
+  Sold: number;
 }
 
 export interface ItemOrderType {

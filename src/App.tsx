@@ -28,38 +28,13 @@ import Checkout from "./components/Checkout";
 import MyProfile from "./components/MyProfile";
 import Admin from "./components/Admin";
 import EditProduct from "./components/Admin/EditProduct";
+import { getCategoriesOfMenuItem, getProductsOfCategory } from "./helper";
 
 const Layout = styled.div`
   width: 1200px;
   max-width: 100%;
   margin: 66px auto;
 `;
-
-const getProductsOfCategory = (products: ProductType[]) => {
-  let result: { [key: string]: ProductType[] } = {};
-  products.forEach((product) => {
-    if (!result[product.CategoryID]) {
-      result[product.CategoryID] = [product];
-    } else {
-      result[product.CategoryID].push(product);
-    }
-  });
-
-  return result;
-};
-
-const getCategoriesOfMenuItem = (categories: CategoryType[]) => {
-  let result: { [key: string]: CategoryType[] } = {};
-  categories.forEach((category) => {
-    if (!result[category.menuItemId]) {
-      result[category.menuItemId] = [category];
-    } else {
-      result[category.menuItemId].push(category);
-    }
-  });
-
-  return result;
-};
 
 function App() {
   const { isLoggedIn, token, user } = useTypedSelector(
@@ -91,6 +66,8 @@ function App() {
             Source: doc.data().Source,
             Star: doc.data().Star,
             comments: doc.data().comments,
+            quantityRemaining: doc.data().quantityRemaining,
+            Sold: doc.data().Sold,
             isDeleted: false,
           });
       });

@@ -5,8 +5,17 @@ import { ProductType } from "../../state/reducers/repositoriesReducer";
 import { FormatAmount } from "../../helper";
 
 const HomeProduct: React.FC<{ data: ProductType }> = (props) => {
-  const { ProductID, Name, Price, Discount, image, Producer, Source, Star } =
-    props.data;
+  const {
+    ProductID,
+    Name,
+    Price,
+    Discount,
+    image,
+    Producer,
+    Source,
+    Star,
+    Sold,
+  } = props.data;
 
   return (
     <div className="grid__column-2-4">
@@ -56,6 +65,9 @@ const HomeProduct: React.FC<{ data: ProductType }> = (props) => {
               />
             ))}
           </div>
+          <span style={{ fontSize: "0.8rem", marginLeft: "8px" }}>
+            Đã bán {Sold}
+          </span>
         </div>
 
         <div className="home-product-item__origin">

@@ -36,3 +36,29 @@ export const FormatDate = (x: number) => {
     month > 9 ? month : `0${month}`
   }/${year}`;
 };
+
+export const getProductsOfCategory = (products: ProductType[]) => {
+  let result: { [key: string]: ProductType[] } = {};
+  products.forEach((product) => {
+    if (!result[product.CategoryID]) {
+      result[product.CategoryID] = [product];
+    } else {
+      result[product.CategoryID].push(product);
+    }
+  });
+
+  return result;
+};
+
+export const getCategoriesOfMenuItem = (categories: CategoryType[]) => {
+  let result: { [key: string]: CategoryType[] } = {};
+  categories.forEach((category) => {
+    if (!result[category.menuItemId]) {
+      result[category.menuItemId] = [category];
+    } else {
+      result[category.menuItemId].push(category);
+    }
+  });
+
+  return result;
+};

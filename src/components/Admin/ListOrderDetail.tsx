@@ -1,5 +1,10 @@
 import { useState, Fragment } from "react";
-import { FormatAmount, FormatDate } from "../../helper";
+import {
+  FormatAmount,
+  FormatDate,
+  getCategoriesOfMenuItem,
+  getProductsOfCategory,
+} from "../../helper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,13 +13,20 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { toast } from "react-toastify";
-import { Order, User } from "../../firebase";
+import { Order, User, Products, Categories, MenuItems } from "../../firebase";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
+import { ActionType } from "../../state/action-types";
+import {
+  CategoryType,
+  MenuItemType,
+  ProductType,
+} from "../../state/reducers/repositoriesReducer";
+import { useDispatch } from "react-redux";
 
 const ListOrderDetail: React.FC<{
   validated: boolean;
@@ -22,8 +34,12 @@ const ListOrderDetail: React.FC<{
   setOpenChangeHandler: (e: boolean) => void;
   listOrders: Array<any>;
 }> = ({ validated, open, setOpenChangeHandler, listOrders }) => {
-  const [orderIdSelected, setOrderIdSelected] =
-    useState<{ orderId: string; userId: string }>();
+  const [orderIdSelected, setOrderIdSelected] = useState<{
+    orderId: string;
+    userId: string;
+    productsId: Array<{ id: string; quantity: number }>;
+  }>();
+  const dispatch = useDispatch();
   return (
     <div style={{ width: 1000, overflow: "hidden" }}>
       <Dialog
@@ -56,8 +72,82 @@ const ListOrderDetail: React.FC<{
                   await User.doc(orderIdSelected.userId).update({
                     orderHistory: userOrder,
                   });
+
+                  orderIdSelected.productsId.forEach(async (el) => {
+                    const productSnapshot = await Products.doc(el.id).get();
+                    const productData = productSnapshot.data()!;
+                    await Products.doc(el.id).update({
+                      Sold: productData.Sold + el.quantity,
+                      quantityRemaining:
+                        productData.quantityRemaining - el.quantity,
+                    });
+                  });
                   toast.success("Xác nhận thành công đơn hàng");
                 }
+
+                let products: ProductType[] = [];
+                let categories: CategoryType[] = [];
+                let menuItems: MenuItemType[] = [];
+                const snapshotProducts = await Products.get();
+                snapshotProducts.forEach((doc) => {
+                  if (!doc.data().isDeleted)
+                    products.push({
+                      ProductID: doc.id,
+                      CategoryID: doc.data().CategoryID,
+                      Name: doc.data().Name,
+                      Price: doc.data().Price,
+                      Discount: doc.data().Discount,
+                      Description: doc.data().Description,
+                      image: doc.data().Image,
+                      Producer: doc.data().Producer,
+                      Source: doc.data().Source,
+                      Star: doc.data().Star,
+                      comments: doc.data().comments,
+                      quantityRemaining: doc.data().quantityRemaining,
+                      Sold: doc.data().Sold,
+                      isDeleted: false,
+                    });
+                });
+
+                orderIdSelected.productsId.forEach((p) => {
+                  const temp = products.find((el) => el.ProductID === p.id);
+                  if (temp) {
+                    temp.Sold += p.quantity;
+                    temp.quantityRemaining -= p.quantity;
+                  }
+                });
+
+                const listProductsOfCategory = getProductsOfCategory(products);
+
+                const snapshotCategories = await Categories.get();
+                snapshotCategories.forEach((doc) => {
+                  categories.push({
+                    categoryId: doc.id,
+                    menuItemId: doc.data().MenuItemID,
+                    name: doc.data().Name,
+                    isDeleted: doc.data().isDeleted,
+                    products: listProductsOfCategory[doc.id],
+                    Promotion: doc.data().Promotion,
+                  });
+                });
+
+                const listCategoriesOfMenuItem =
+                  getCategoriesOfMenuItem(categories);
+
+                const snapshotMenuItems = await MenuItems.get();
+                snapshotMenuItems.forEach((doc) => {
+                  menuItems.push({
+                    menuItemId: doc.id,
+                    name: doc.data().Name,
+                    isDeleted: doc.data().isDeleted,
+                    categories: listCategoriesOfMenuItem[doc.id],
+                  });
+                });
+
+                dispatch({
+                  type: ActionType.LOAD_PRODUCT,
+                  payload: [products, categories, menuItems],
+                });
               }
             }}
             autoFocus
@@ -215,6 +305,10 @@ const ListOrderDetail: React.FC<{
                           setOrderIdSelected({
                             orderId: order.id,
                             userId: order.userId,
+                            productsId: order.order.map((el: any) => ({
+                              id: el.productId,
+                              quantity: el.quantity,
+                            })),
                           });
                         }}
                       >

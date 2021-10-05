@@ -8,7 +8,10 @@ import "./index.css";
 import { getAllProducts } from "../../helper";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { ProductType } from "../../state/reducers/repositoriesReducer";
+import {
+  MenuItemType,
+  ProductType,
+} from "../../state/reducers/repositoriesReducer";
 import { Helmet } from "react-helmet";
 
 const MainContent: React.FC = () => {
@@ -16,6 +19,7 @@ const MainContent: React.FC = () => {
   const [categoryChoice, setCategoryChoice] = useState("");
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState("new");
+  const [menuItem, setMenuItem] = useState<MenuItemType>();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -31,7 +35,12 @@ const MainContent: React.FC = () => {
 
   const menuItemID = useParams<{ menuItemID?: string }>()?.menuItemID;
 
-  const menuItem = menuItems.find((el) => el.menuItemId === menuItemID);
+  useEffect(() => {
+    const temp = menuItems.find((el) => el.menuItemId === menuItemID);
+    if (temp) {
+      setMenuItem(temp);
+    }
+  }, [menuItemID, menuItems]);
 
   let productsChoice: ProductType[] = [];
   if (menuItem) {
@@ -59,17 +68,9 @@ const MainContent: React.FC = () => {
       +a.ProductID > +b.ProductID ? -1 : +b.ProductID > +a.ProductID ? 1 : 0
     );
   } else {
-    if (menuItem) {
-      productsChoice = getAllProducts(menuItem.categories);
-    }
-
-    if (categoryChoice) {
-      const category = menuItem?.categories.find(
-        (el) => el.categoryId === categoryChoice
-      );
-
-      if (category && category.products) productsChoice = category?.products;
-    }
+    productsChoice.sort((a: ProductType, b: ProductType) =>
+      a.Sold > b.Sold ? -1 : b.Sold > a.Sold ? 1 : 0
+    );
   }
 
   const sizeProducts = productsChoice.length;
