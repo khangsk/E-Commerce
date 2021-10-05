@@ -143,7 +143,9 @@ const Checkout: React.FC = () => {
             onBlur={() => setAddressBlur(true)}
             error={!address.trim() && addressBlur}
             helperText={
-              !address.trim() && addressBlur ? "Vui lòng nhập họ và tên" : ""
+              !address.trim() && addressBlur
+                ? "Vui lòng cung cấp địa chỉ chính xác để nhận hàng"
+                : ""
             }
           />
           <p>3. Phương thức thanh toán</p>

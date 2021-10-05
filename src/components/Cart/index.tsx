@@ -246,8 +246,7 @@ const Cart: React.FC = () => {
           <div
             style={{
               textAlign: "center",
-              paddingTop: "2rem",
-              paddingBottom: "2rem",
+              padding: "2rem",
               backgroundColor: "#f5fbff",
               display: "flex",
               alignItems: "center",

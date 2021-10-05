@@ -49,7 +49,15 @@ function SwipeableTextMobileStepper() {
   };
 
   return (
-    <Box sx={{ width: 1200, maxWidth: "100%", flexGrow: 1, mx: "auto" }}>
+    <Box
+      sx={{
+        width: 1200,
+        maxWidth: "100%",
+        flexGrow: 1,
+        mx: "auto",
+        padding: "0rem",
+      }}
+    >
       <Paper
         square
         elevation={0}
@@ -73,7 +81,7 @@ function SwipeableTextMobileStepper() {
               <Box
                 component="img"
                 sx={{
-                  height: 400,
+                  height: 500,
                   display: "block",
                   // maxWidth: "100%",
                   overflow: "hidden",
