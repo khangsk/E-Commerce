@@ -90,7 +90,7 @@ const ListOrderDetail: React.FC<{
                 let menuItems: MenuItemType[] = [];
                 const snapshotProducts = await Products.get();
                 snapshotProducts.forEach((doc) => {
-                  if (!doc.data().isDeleted)
+                  if (!doc.data().isDeleted && doc.data().quantityRemaining > 0)
                     products.push({
                       ProductID: doc.id,
                       CategoryID: doc.data().CategoryID,

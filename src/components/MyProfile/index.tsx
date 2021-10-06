@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import MyPurchase from "./MyPurchase";
 import MyAccount from "./MyAccount";
 import MyOrderWaiting from "./MyOrderWaiting";
+import MyNewPassword from "./MyNewPassword";
 
 const MyProfile: React.FC = () => {
   const user = useTypedSelector((state) => state.repositories.user);
@@ -22,6 +23,8 @@ const MyProfile: React.FC = () => {
         ? "account"
         : location.pathname.match("purchase")
         ? "purchase"
+        : location.pathname.match("password")
+        ? "newPassword"
         : "waiting"
     );
   }, [location.pathname]);
@@ -92,6 +95,21 @@ const MyProfile: React.FC = () => {
                     Tài khoản của tôi
                   </Link>
                 </li>
+                <li key={"newPassword"} className="category-item">
+                  <Link
+                    to="/my/new-password"
+                    className={`category-item__link ${
+                      categoryActive === "newPassword"
+                        ? "category-item--active"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setCategoryActive("newPassword");
+                    }}
+                  >
+                    Đổi mật khẩu
+                  </Link>
+                </li>
                 <li key={"order-waiting"} className="category-item">
                   <Link
                     to="/my/order-waiting"
@@ -136,6 +154,9 @@ const MyProfile: React.FC = () => {
                   {isLoggedIn &&
                     location.pathname === "/my/purchase" &&
                     user && <MyPurchase />}
+                  {isLoggedIn &&
+                    location.pathname === "/my/new-password" &&
+                    user && <MyNewPassword />}
                 </div>
               </div>
             </div>

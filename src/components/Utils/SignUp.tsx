@@ -29,6 +29,8 @@ export default function SignUp() {
   const [phoneBlur, setphoneBlur] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordBlur, setPasswordBlur] = useState(false);
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
+  const [confirmPasswordBlur, setConfirmPasswordBlur] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -148,14 +150,12 @@ export default function SignUp() {
                   label="Tên"
                   autoFocus
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setfirstNameInput(e.target.value);
+                    setfirstNameInput(e.target.value.trim());
                   }}
                   onBlur={() => setfirstNameBlur(true)}
-                  error={!firstNameInput.trim() && firstNameBlur}
+                  error={!firstNameInput && firstNameBlur}
                   helperText={
-                    !firstNameInput.trim() && firstNameBlur
-                      ? "Vui lòng nhập tên"
-                      : ""
+                    !firstNameInput && firstNameBlur ? "Vui lòng nhập tên" : ""
                   }
                 />
               </Grid>
@@ -168,12 +168,12 @@ export default function SignUp() {
                   name="lastName"
                   autoComplete="lname"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setlastNameInput(e.target.value);
+                    setlastNameInput(e.target.value.trim());
                   }}
                   onBlur={() => setlastNameBlur(true)}
-                  error={!lastNameInput.trim() && lastNameBlur}
+                  error={!lastNameInput && lastNameBlur}
                   helperText={
-                    !lastNameInput.trim() && lastNameBlur
+                    !lastNameInput && lastNameBlur
                       ? "Vui lòng nhập họ và tên đệm"
                       : ""
                   }
@@ -212,15 +212,40 @@ export default function SignUp() {
                   label="Mật khẩu"
                   type="password"
                   id="password"
-                  autoComplete="new-password"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setPasswordInput(e.target.value);
+                    setPasswordInput(e.target.value.trim());
                   }}
                   onBlur={() => setPasswordBlur(true)}
-                  error={passwordInput.trim().length < 6 && passwordBlur}
+                  error={passwordInput.length < 6 && passwordBlur}
                   helperText={
-                    passwordInput.trim().length < 6 && passwordBlur
+                    passwordInput.length < 6 && passwordBlur
                       ? "Mật khẩu phải có ít nhất 6 ký tự"
+                      : ""
+                  }
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Xác nhận mật khẩu"
+                  type="password"
+                  id="confirmPassword"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setConfirmPasswordInput(e.target.value.trim());
+                  }}
+                  onBlur={() => setConfirmPasswordBlur(true)}
+                  error={
+                    (confirmPasswordInput.length < 6 ||
+                      confirmPasswordInput !== passwordInput) &&
+                    confirmPasswordBlur
+                  }
+                  helperText={
+                    (confirmPasswordInput.length < 6 ||
+                      confirmPasswordInput !== passwordInput) &&
+                    confirmPasswordBlur
+                      ? "Mật khẩu và Xác nhận mật khẩu không giống nhau"
                       : ""
                   }
                 />
@@ -259,10 +284,11 @@ export default function SignUp() {
               sx={{ mt: 3, mb: 2 }}
               disabled={
                 !emailInput ||
-                passwordInput.trim().length < 6 ||
-                !firstNameInput.trim().length ||
-                !lastNameInput.trim().length ||
-                !phoneInput
+                passwordInput.length < 6 ||
+                !firstNameInput.length ||
+                !lastNameInput.length ||
+                !phoneInput ||
+                passwordInput !== confirmPasswordInput
               }
             >
               Đăng ký

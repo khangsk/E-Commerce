@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const SignIn: React.FC = () => {
   const dispatch = useDispatch();
@@ -23,6 +25,7 @@ const SignIn: React.FC = () => {
   const [emailBlur, setEmailBlur] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordBlur, setPasswordBlur] = useState(false);
+  const [showPassword, setShowPassword] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -136,26 +139,52 @@ const SignIn: React.FC = () => {
                 !emailInput && emailBlur ? "Email không chính xác" : ""
               }
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Mật khẩu"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setPasswordInput(e.target.value);
-              }}
-              onBlur={() => setPasswordBlur(true)}
-              error={passwordInput.trim().length < 6 && passwordBlur}
-              helperText={
-                passwordInput.trim().length < 6 && passwordBlur
-                  ? "Mật khẩu phải có ít nhất 6 ký tự"
-                  : ""
-              }
-            />
+            <span style={{ position: "relative" }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Mật khẩu"
+                type={showPassword === "show" ? "text" : "password"}
+                id="password"
+                autoComplete="current-password"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setPasswordInput(e.target.value);
+                  if (!showPassword) {
+                    setShowPassword("hide");
+                  }
+                  if (!e.target.value) {
+                    setShowPassword("");
+                  }
+                }}
+                onBlur={() => setPasswordBlur(true)}
+                error={passwordInput.trim().length < 6 && passwordBlur}
+                helperText={
+                  passwordInput.trim().length < 6 && passwordBlur
+                    ? "Mật khẩu phải có ít nhất 6 ký tự"
+                    : ""
+                }
+              />
+              {showPassword && (
+                <FontAwesomeIcon
+                  icon={showPassword === "hide" ? faEyeSlash : faEye}
+                  style={{
+                    position: "absolute",
+                    color: "var(--primary-color)",
+                    fontSize: "1.2rem",
+                    top: 32,
+                    right: 13,
+                  }}
+                  onClick={() =>
+                    setShowPassword((state) =>
+                      state === "hide" ? "show" : "hide"
+                    )
+                  }
+                />
+              )}
+            </span>
+
             <Button
               type="submit"
               fullWidth

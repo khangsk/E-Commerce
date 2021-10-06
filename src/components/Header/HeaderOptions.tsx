@@ -109,7 +109,12 @@ const HeaderOptions: React.FC = () => {
               <>
                 <li className="select-input__item">
                   <Link to="/my/account" className="select-input__link">
-                    Trang của tôi
+                    Tài khoản của tôi
+                  </Link>
+                </li>
+                <li className="select-input__item">
+                  <Link to="/my/new-password" className="select-input__link">
+                    Đổi mật khẩu
                   </Link>
                 </li>
                 <li className="select-input__item">

@@ -53,7 +53,7 @@ function App() {
       let menuItems: MenuItemType[] = [];
       const snapshotProducts = await Products.get();
       snapshotProducts.forEach((doc) => {
-        if (!doc.data().isDeleted)
+        if (!doc.data().isDeleted && doc.data().quantityRemaining > 0)
           products.push({
             ProductID: doc.id,
             CategoryID: doc.data().CategoryID,
@@ -167,7 +167,12 @@ function App() {
           </Route>
           <Route
             exact
-            path={["/my/account", "/my/purchase", "/my/order-waiting"]}
+            path={[
+              "/my/account",
+              "/my/purchase",
+              "/my/order-waiting",
+              "/my/new-password",
+            ]}
           >
             {isLoggedIn && <MyProfile />}
             {!isLoggedIn && <Redirect to="/login" />}
