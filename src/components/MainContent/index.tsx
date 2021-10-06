@@ -3,7 +3,6 @@ import Category from "./Category";
 import HomeFilter from "./HomeFilter";
 import HomeProduct from "./HomeProduct";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
-import { useParams } from "react-router-dom";
 import "./index.css";
 import { getAllProducts } from "../../helper";
 import Pagination from "@mui/material/Pagination";
@@ -13,6 +12,7 @@ import {
   ProductType,
 } from "../../state/reducers/repositoriesReducer";
 import { Helmet } from "react-helmet";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 
 const MainContent: React.FC = () => {
   const menuItems = useTypedSelector((state) => state.repositories.menuItems);
@@ -20,10 +20,8 @@ const MainContent: React.FC = () => {
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState("new");
   const [menuItem, setMenuItem] = useState<MenuItemType>();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [page]);
+  const history = useHistory();
+  const location = useLocation();
 
   const onChoseHandler = (e: string) => {
     setCategoryChoice(e);
@@ -75,6 +73,20 @@ const MainContent: React.FC = () => {
 
   const sizeProducts = productsChoice.length;
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const query = new URLSearchParams(location.search);
+    const pageNumber = parseInt(query.get("page") || "1", 10);
+    if (
+      menuItem &&
+      getAllProducts(menuItem.categories).length < 15 * (pageNumber - 1)
+    ) {
+      setPage(1);
+      console.log(getAllProducts(menuItem.categories), page);
+      history.replace(`${location.pathname}?page=1`);
+    } else setPage(pageNumber);
+  }, [page, location.search, menuItem, location.pathname, history]);
+
   return (
     <div className="app__container">
       <Helmet>
@@ -115,7 +127,10 @@ const MainContent: React.FC = () => {
                     count={Math.floor(sizeProducts / 15) + 1}
                     page={page}
                     color="secondary"
-                    onChange={(event, val) => setPage(val)}
+                    onChange={(event, val) => {
+                      history.push(`${location.pathname}?page=${val}`);
+                      setPage(val);
+                    }}
                   />
                 </Stack>
               </div>
