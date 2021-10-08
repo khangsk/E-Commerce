@@ -82,7 +82,6 @@ const MainContent: React.FC = () => {
       getAllProducts(menuItem.categories).length < 15 * (pageNumber - 1)
     ) {
       setPage(1);
-      console.log(getAllProducts(menuItem.categories), page);
       history.replace(`${location.pathname}?page=1`);
     } else setPage(pageNumber);
   }, [page, location.search, menuItem, location.pathname, history]);

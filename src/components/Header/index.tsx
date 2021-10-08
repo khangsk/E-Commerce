@@ -3,6 +3,7 @@ import HeaderOptions from "./HeaderOptions";
 import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFutbol } from "@fortawesome/free-solid-svg-icons";
+import SearchInput from "./SearchInput";
 
 const Header: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const Header: React.FC = () => {
             E-Football
           </Link>
         </h1>
+        <SearchInput />
         <HeaderOptions />
       </div>
     </header>

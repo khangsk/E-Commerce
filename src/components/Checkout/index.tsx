@@ -15,6 +15,8 @@ import { Order } from "../../firebase";
 import { ActionType } from "../../state/action-types";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
+// import CryptoJS from "crypto-js";
+// import { signature, url } from "../../payment/Momo";
 
 const Checkout: React.FC = () => {
   const user = useTypedSelector((state) => state.repositories.user);
@@ -241,6 +243,17 @@ const Checkout: React.FC = () => {
                       });
                       history.replace("/");
                     }
+                  } else if (paymenMethod === "momo") {
+                    // fetch(
+                    //   url +
+                    //     CryptoJS.enc.Base64.stringify(
+                    //       CryptoJS.HmacSHA256(
+                    //         signature,
+                    //         "wtf3L8Wpb7qYZGLBMsh9RjrBQXia5GMk"
+                    //       )
+                    //     )
+                    // ).then((res) => console.log(res));
+                    toast.warning("Tính năng đang được cập nhật!");
                   }
                 }
               }}

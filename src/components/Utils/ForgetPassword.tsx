@@ -8,41 +8,56 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { User } from "../../firebase";
-import Loading from "../Utils/Loading";
-import { useDispatch } from "react-redux";
-import { ActionType } from "../../state/action-types";
+import Loading from "./Loading";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-const SignIn: React.FC = () => {
-  const dispatch = useDispatch();
-
+const ForgetPassword: React.FC = () => {
   const [isLoadding, setIsLoadding] = useState(false);
   const [emailInput, setEmailInput] = useState(false);
   const [emailBlur, setEmailBlur] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [passwordBlur, setPasswordBlur] = useState(false);
-  const [showPassword, setShowPassword] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
     const email = data.get("email");
-    const password = data.get("password");
+
+    if (!localStorage.getItem("timeReset")) {
+      localStorage.setItem(
+        "timeReset",
+        new Date(Date.now()).getTime().toString()
+      );
+    } else {
+      if (
+        +localStorage.getItem("timeReset")! + 59000 >
+        new Date(Date.now()).getTime()
+      ) {
+        toast.warning(
+          `Vui lòng đợi sau ${Math.floor(
+            (+localStorage.getItem("timeReset")! +
+              59000 -
+              new Date(Date.now()).getTime()) /
+              1000
+          )} giây!`
+        );
+        return;
+      } else {
+        localStorage.setItem(
+          "timeReset",
+          new Date(Date.now()).getTime().toString()
+        );
+      }
+    }
 
     setIsLoadding(true);
     fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDb7qRj2WgeaJsJIn7JyAzyDbPI3hzyKoY`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDb7qRj2WgeaJsJIn7JyAzyDbPI3hzyKoY`,
       {
         method: "POST",
         body: JSON.stringify({
+          requestType: "PASSWORD_RESET",
           email,
-          password,
-          returnSecureToken: true,
         }),
       }
     )
@@ -51,29 +66,13 @@ const SignIn: React.FC = () => {
           return res.json();
         } else {
           return res.json().then((data) => {
-            let errorMessage = "Tài khoản hoặc mật khẩu không chính xác!";
+            let errorMessage = "Yêu cầu không thành công. Vui lòng thử lại!";
             throw new Error(errorMessage);
           });
         }
       })
       .then((data) => {
-        (async () => {
-          const snapshot = await User.where("email", "==", email).get();
-
-          const user = {
-            id: snapshot.docs[0].id,
-            ...snapshot.docs[0].data(),
-          };
-
-          dispatch({
-            type: ActionType.LOGIN,
-            payload: [data.idToken, user],
-          });
-
-          localStorage.setItem("token", data.idToken);
-
-          toast("Đăng nhập thành công!");
-        })();
+        toast("Yêu cầu đã gửi qua email của bạn");
         setIsLoadding(false);
       })
       .catch((err) => {
@@ -86,14 +85,14 @@ const SignIn: React.FC = () => {
     <>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Đăng nhập</title>
+        <title>Quên mật khẩu</title>
       </Helmet>
       {isLoadding && <Loading />}
       <Container component="main" maxWidth="xs">
         <Box
           sx={{
             marginTop: 12,
-            marginBottom: 16,
+            marginBottom: 32,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -106,7 +105,7 @@ const SignIn: React.FC = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Đăng nhập vào E-Football
+            Quên mật khẩu tài khoản đăng nhập
           </Typography>
           <Box
             component="form"
@@ -139,65 +138,20 @@ const SignIn: React.FC = () => {
                 !emailInput && emailBlur ? "Email không chính xác" : ""
               }
             />
-            <span style={{ position: "relative" }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Mật khẩu"
-                type={showPassword === "show" ? "text" : "password"}
-                id="password"
-                autoComplete="current-password"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setPasswordInput(e.target.value);
-                  if (!showPassword) {
-                    setShowPassword("hide");
-                  }
-                  if (!e.target.value) {
-                    setShowPassword("");
-                  }
-                }}
-                onBlur={() => setPasswordBlur(true)}
-                error={passwordInput.trim().length < 6 && passwordBlur}
-                helperText={
-                  passwordInput.trim().length < 6 && passwordBlur
-                    ? "Mật khẩu phải có ít nhất 6 ký tự"
-                    : ""
-                }
-              />
-              {showPassword && (
-                <FontAwesomeIcon
-                  icon={showPassword === "hide" ? faEyeSlash : faEye}
-                  style={{
-                    position: "absolute",
-                    color: "var(--primary-color)",
-                    fontSize: "1.2rem",
-                    top: 32,
-                    right: 13,
-                  }}
-                  onClick={() =>
-                    setShowPassword((state) =>
-                      state === "hide" ? "show" : "hide"
-                    )
-                  }
-                />
-              )}
-            </span>
 
             <Button
               type="submit"
               fullWidth
-              disabled={!emailInput || passwordInput.trim().length < 6}
+              disabled={!emailInput}
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Đăng nhập
+              Gửi yêu cầu
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forget-password" variant="body2">
-                  Quên mật khẩu?
+                <Link href="/login" variant="body2">
+                  Quay lại
                 </Link>
               </Grid>
               <Grid item>
@@ -213,4 +167,4 @@ const SignIn: React.FC = () => {
   );
 };
 
-export default SignIn;
+export default ForgetPassword;

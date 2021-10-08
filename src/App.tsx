@@ -29,6 +29,8 @@ import MyProfile from "./components/MyProfile";
 import Admin from "./components/Admin";
 import EditProduct from "./components/Admin/EditProduct";
 import { getCategoriesOfMenuItem, getProductsOfCategory } from "./helper";
+import SearchPage from "./components/Utils/SearchPage";
+import ForgetPassword from "./components/Utils/ForgetPassword";
 
 const Layout = styled.div`
   width: 1200px;
@@ -155,8 +157,16 @@ function App() {
             )}
             {isLoggedIn && !location.state && <Redirect to="/" />}
           </Route>
+          <Route exact path="/forget-password">
+            {!isLoggedIn && <ForgetPassword />}
+            {isLoggedIn && location.state && (
+              <Redirect to={location.state.from} />
+            )}
+            {isLoggedIn && !location.state && <Redirect to="/" />}
+          </Route>
           <Route exact path="/menu-item/:menuItemID" component={MainContent} />
           <Route exact path="/product-detail/:id" component={ProductDetail} />
+          <Route exact path="/search" component={SearchPage} />
           <Route exact path="/cart">
             {isLoggedIn && <Cart />}
             {!isLoggedIn && <Redirect to="/login" />}

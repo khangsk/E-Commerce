@@ -4,7 +4,7 @@ import { faGift, faCheck } from "@fortawesome/free-solid-svg-icons";
 import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { useTypedSelector } from "../../../hooks/useTypedSelector";
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import { useParams, useHistory, useLocation, Link } from "react-router-dom";
 import { FormatAmount, FormatDate } from "../../../helper";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -172,6 +172,7 @@ const ProductDetail: React.FC = () => {
     isLoggedIn,
     categories,
     user,
+    menuItems,
     orderHistory,
     productsOrder,
   } = useTypedSelector((state) => state.repositories);
@@ -209,6 +210,10 @@ const ProductDetail: React.FC = () => {
   }, [productId, productsOrder, products]);
 
   if (product) {
+    const menuItemOfProduct = menuItems.find((el) =>
+      el.categories.find((cat) => cat.categoryId === product.CategoryID)
+    );
+
     const isPurchased = orderHistory
       ? orderHistory.find((el) => {
           return (
@@ -447,7 +452,8 @@ const ProductDetail: React.FC = () => {
             Thông tin sản phẩm
           </p>
           <div style={{ display: "flex" }}>
-            <div style={{ width: "18%", marginLeft: 16 }}>
+            <div style={{ width: "250px", marginLeft: 16 }}>
+              <p>Nhóm sản phẩm:</p>
               <p>Nhà sản xuất:</p>
               <p>Quốc gia:</p>
               <p>Số lượng đã bán:</p>
@@ -455,6 +461,19 @@ const ProductDetail: React.FC = () => {
               <p>Mô tả sản phẩm:</p>
             </div>
             <div style={{ marginRight: "16px" }}>
+              <p style={{ width: "150px", marginBottom: "13px" }}>
+                <Link
+                  to={`/menu-item/${menuItemOfProduct?.menuItemId}`}
+                  className="select-input__link"
+                  style={{
+                    padding: 0,
+                    color: "var(--primary-color)",
+                    fontSize: "1.1rem",
+                  }}
+                >
+                  {menuItemOfProduct?.name}
+                </Link>
+              </p>
               <p>{product.Producer}</p>
               <p>{product.Source}</p>
               <p style={{ fontWeight: "bold" }}>{product.Sold}</p>
