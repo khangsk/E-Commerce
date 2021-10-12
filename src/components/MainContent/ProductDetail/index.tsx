@@ -452,7 +452,7 @@ const ProductDetail: React.FC = () => {
             Thông tin sản phẩm
           </p>
           <div style={{ display: "flex" }}>
-            <div style={{ width: "250px", marginLeft: 16 }}>
+            <div style={{ flexBasis: "20%", marginLeft: 16 }}>
               <p>Nhóm sản phẩm:</p>
               <p>Nhà sản xuất:</p>
               <p>Quốc gia:</p>
@@ -460,7 +460,7 @@ const ProductDetail: React.FC = () => {
               <p>Số lượng còn lại:</p>
               <p>Mô tả sản phẩm:</p>
             </div>
-            <div style={{ marginRight: "16px" }}>
+            <div style={{ flexBasis: "80%", marginRight: "16px" }}>
               <p style={{ width: "150px", marginBottom: "13px" }}>
                 <Link
                   to={`/menu-item/${menuItemOfProduct?.menuItemId}`}

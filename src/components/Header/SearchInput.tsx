@@ -13,6 +13,7 @@ const SearchInput: React.FC = () => {
 
   const onSearchHandler = () => {
     history.push(`/search?keyword=${searchInput}`);
+    setSearchInput("");
   };
 
   const [productsShow, setProductsShow] = useState<ProductType[]>([]);

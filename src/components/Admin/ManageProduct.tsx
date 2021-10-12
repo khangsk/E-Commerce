@@ -352,6 +352,7 @@ const ManageProduct: React.FC = () => {
                   Sold: 0,
                   comments: [],
                   isDeleted: false,
+                  quantityRemaining: 1000,
                 });
                 history.replace("/");
                 window.location.reload();
