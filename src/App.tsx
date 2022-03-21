@@ -1,42 +1,44 @@
-import { useEffect, useState } from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
-import SignIn from "./components/Utils/SignIn";
-import SignUp from "./components/Utils/SignUp";
-import styled from "styled-components";
-import Home from "./components/Home";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import MainContent from "./components/MainContent";
-import ProductDetail from "./components/MainContent/ProductDetail";
-import { useTypedSelector } from "./hooks/useTypedSelector";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
-import { User, Products, Categories, MenuItems } from "./firebase";
-import jwt_decode from "jwt-decode";
-import { ActionType } from "./state/action-types";
+import { useEffect, useState } from 'react';
+import { Route, Redirect, Switch } from 'react-router-dom';
+import SignIn from './components/Utils/SignIn';
+import SignUp from './components/Utils/SignUp';
+import styled from 'styled-components';
+import Home from './components/Home';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import MainContent from './components/MainContent';
+import ProductDetail from './components/MainContent/ProductDetail';
+import { useTypedSelector } from './hooks/useTypedSelector';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { User, Products, Categories, MenuItems } from './firebase';
+import jwt_decode from 'jwt-decode';
+import { ActionType } from './state/action-types';
 import {
   ProductType,
   UserType,
   CategoryType,
   MenuItemType,
-} from "./state/reducers/repositoriesReducer";
-import Loading from "./components/Utils/Loading";
-import Cart from "./components/Cart";
-import Checkout from "./components/Checkout";
-import MyProfile from "./components/MyProfile";
-import Admin from "./components/Admin";
-import EditProduct from "./components/Admin/EditProduct";
-import { getCategoriesOfMenuItem, getProductsOfCategory } from "./helper";
-import SearchPage from "./components/Utils/SearchPage";
-import ForgetPassword from "./components/Utils/ForgetPassword";
+} from './state/reducers/repositoriesReducer';
+import Loading from './components/Utils/Loading';
+import Cart from './components/Cart';
+import Checkout from './components/Checkout';
+import MyProfile from './components/MyProfile';
+import Admin from './components/Admin';
+import EditProduct from './components/Admin/EditProduct';
+import { getCategoriesOfMenuItem, getProductsOfCategory } from './helper';
+import SearchPage from './components/Utils/SearchPage';
+import ForgetPassword from './components/Utils/ForgetPassword';
 
 const Layout = styled.div`
   width: 1200px;
   max-width: 100%;
   margin: 66px auto;
 `;
+
+export const ADMIN = 'admin@gmail.com';
 
 function App() {
   const { isLoggedIn, token, user } = useTypedSelector(
@@ -110,7 +112,7 @@ function App() {
     const getUserWhenReload = async (token: any) => {
       const decoded: any = jwt_decode(token);
 
-      const snapshot = await User.where("email", "==", decoded.email).get();
+      const snapshot = await User.where('email', '==', decoded.email).get();
 
       const user: UserType | any = {
         id: snapshot.docs[0].id,
@@ -120,7 +122,7 @@ function App() {
       return user;
     };
 
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem('token')) {
       const decoded: any = jwt_decode(token);
       const expirationTime = decoded.exp * 1000 - 60000;
 
@@ -128,7 +130,7 @@ function App() {
         dispatch({ type: ActionType.LOGOUT });
       } else {
         (async () => {
-          const user = await getUserWhenReload(localStorage.getItem("token"));
+          const user = await getUserWhenReload(localStorage.getItem('token'));
           dispatch({ type: ActionType.LOAD_USER, payload: user });
         })();
       }
@@ -142,69 +144,65 @@ function App() {
         <ToastContainer autoClose={2000} />
         <Header />
         <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/register">
+          <Route path='/' exact component={Home} />
+          <Route path='/register'>
             {!isLoggedIn && <SignUp />}
             {isLoggedIn && location.state && (
               <Redirect to={location.state.from} />
             )}
-            {isLoggedIn && !location.state && <Redirect to="/" />}
+            {isLoggedIn && !location.state && <Redirect to='/' />}
           </Route>
-          <Route path="/login">
+          <Route path='/login'>
             {!isLoggedIn && <SignIn />}
             {isLoggedIn && location.state && (
               <Redirect to={location.state.from} />
             )}
-            {isLoggedIn && !location.state && <Redirect to="/" />}
+            {isLoggedIn && !location.state && <Redirect to='/' />}
           </Route>
-          <Route exact path="/forget-password">
+          <Route exact path='/forget-password'>
             {!isLoggedIn && <ForgetPassword />}
             {isLoggedIn && location.state && (
               <Redirect to={location.state.from} />
             )}
-            {isLoggedIn && !location.state && <Redirect to="/" />}
+            {isLoggedIn && !location.state && <Redirect to='/' />}
           </Route>
-          <Route exact path="/menu-item/:menuItemID" component={MainContent} />
-          <Route exact path="/product-detail/:id" component={ProductDetail} />
-          <Route exact path="/search" component={SearchPage} />
-          <Route exact path="/cart">
+          <Route exact path='/menu-item/:menuItemID' component={MainContent} />
+          <Route exact path='/product-detail/:id' component={ProductDetail} />
+          <Route exact path='/search' component={SearchPage} />
+          <Route exact path='/cart'>
             {isLoggedIn && <Cart />}
-            {!isLoggedIn && <Redirect to="/login" />}
+            {!isLoggedIn && <Redirect to='/login' />}
           </Route>
-          <Route exact path="/checkout">
+          <Route exact path='/checkout'>
             {isLoggedIn && <Checkout />}
-            {!isLoggedIn && <Redirect to="/login" />}
+            {!isLoggedIn && <Redirect to='/login' />}
           </Route>
           <Route
             exact
             path={[
-              "/my/account",
-              "/my/purchase",
-              "/my/order-waiting",
-              "/my/new-password",
+              '/my/account',
+              '/my/purchase',
+              '/my/order-waiting',
+              '/my/new-password',
             ]}
           >
             {isLoggedIn && <MyProfile />}
-            {!isLoggedIn && <Redirect to="/login" />}
+            {!isLoggedIn && <Redirect to='/login' />}
           </Route>
           <Route
             exact
-            path={["/admin/account", "/admin/order", "/admin/product"]}
+            path={['/admin/account', '/admin/order', '/admin/product']}
           >
-            {isLoggedIn && user.email === "admin@gmail.com" && <Admin />}
-            {isLoggedIn && user.email !== "admin@gmail.com" && (
-              <Redirect to="/" />
-            )}
-            {!isLoggedIn && <Redirect to="/login" />}
+            {isLoggedIn && user.email === ADMIN && <Admin />}
+            {isLoggedIn && user.email !== ADMIN && <Redirect to='/' />}
+            {!isLoggedIn && <Redirect to='/login' />}
           </Route>
-          <Route exact path="/product-detail/:id/edit">
-            {isLoggedIn && user.email === "admin@gmail.com" && <EditProduct />}
-            {isLoggedIn && user.email !== "admin@gmail.com" && (
-              <Redirect to="/" />
-            )}
-            {!isLoggedIn && <Redirect to="/login" />}
+          <Route exact path='/product-detail/:id/edit'>
+            {isLoggedIn && user.email === ADMIN && <EditProduct />}
+            {isLoggedIn && user.email !== ADMIN && <Redirect to='/' />}
+            {!isLoggedIn && <Redirect to='/login' />}
           </Route>
-          <Redirect to="/" />
+          <Redirect to='/' />
         </Switch>
       </Layout>
       <Footer />
